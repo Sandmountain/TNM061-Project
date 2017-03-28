@@ -75,10 +75,10 @@ THREEx.KeyboardState.prototype.destroy	= function()
 
 THREEx.KeyboardState.MODIFIERS	= ['shift', 'ctrl', 'alt', 'meta'];
 THREEx.KeyboardState.ALIAS	= {
-	'left'		: 37,
-	'up'		: 38,
-	'right'		: 39,
-	'down'		: 40,
+	'left'		: 65,
+	'up'		: 87,
+	'right'		: 68,
+	'down'		: 83,
 	'space'		: 32,
 	'pageup'	: 33,
 	'pagedown'	: 34,
@@ -98,6 +98,7 @@ THREEx.KeyboardState.prototype._onKeyChange	= function(event)
 	var keyCode		= event.keyCode
 	var pressed		= event.type === 'keydown' ? true : false
 	this.keyCodes[keyCode]	= pressed
+	
 	// update this.modifiers
 	this.modifiers['shift']	= event.shiftKey
 	this.modifiers['ctrl']	= event.ctrlKey
