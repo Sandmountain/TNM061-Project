@@ -14,6 +14,7 @@ var windowHalfY = window.innerHeight ;
 
 // Mina object som skapas.
 var boll, golv;
+boll = new THREE.Group();
 
 //Klass som handskar tangenbordstryck
 var keyboard= new THREEx.KeyboardState();
@@ -29,13 +30,23 @@ var speedY = 0;
 var speedZ = 0;
 
 var veloY = 0;
+
+//Variable for modell
+var meshes = [];
+var mixers = [];
+var clock = new THREE.Clock; 
+var loader = new THREE.JDLoader();
+var delta;
+var material;
+
+
 ////*****************////
 //// Tansformationer ////
 ////*****************////
 
 //Sätter golv där de ska vara
 var flytta_golv = new THREE.Group();
-flytta_golv.translateY(-1);
+flytta_golv.translateY(-50);
 
 //Vrider kameran så att man ser snett uppifrån
 var kamera_initial_pos = new THREE.Group();
@@ -68,17 +79,66 @@ function createscene()
 	
 	//Uppsättning av kameran med perspektivmatris och avstånd
 	camera = new THREE.PerspectiveCamera( 50, window.innerWidth/window.innerHeight, 0.1, 10000);
-	camera.position.z = 10;
+	camera.position.z = 500;
 
 	// Här skapar vi våra modeller
-	skapa_boll();
+	//skapa_boll();
 	skapa_golv();
 	
 	//Skapar scenen
 	scene = new THREE.Scene();
+	
+	
+	//stack();
 
 	//Här skapar jag scengrafen
-	stack();
+	
+	var ambient = new THREE.AmbientLight( 0x444444 );
+	scene.add( ambient );
+
+	var directionalLight = new THREE.DirectionalLight( 0xffeedd );
+	directionalLight.position.set( 5, 5, 5 ).normalize();
+	scene.add( directionalLight );
+
+
+	scene.add(kamera_initial_pos);
+	kamera_initial_pos.add(boll);
+	loader.load("./Models/jorden.jd",
+    function (data)
+    {
+               var multiMaterial = new THREE.MultiMaterial(data.materials);
+               for (var i = 0; i < data.geometries.length; ++i)
+               {
+	                var mesh = new THREE.SkinnedMesh(data.geometries[i], multiMaterial);
+	                meshes.push(mesh);
+	                boll.add(mesh);
+	               
+
+	                if (mesh.geometry.animations)
+	               	{
+	                  	
+	                  
+		                var mixer = new THREE.AnimationMixer(mesh);
+		                mixers.push(mixer);
+		                mixer.clipAction(mesh.geometry.animations[0]).play();
+
+		                //var mixer = new THREE.AnimationMixer(mesh);
+		               // mixers.push(mixer);
+		                //mixer.clipAction(mesh.geometry.animations).play();
+	                 
+             		}
+               }
+    });
+	
+	kamera_initial_pos.add(flytta_golv);
+	flytta_golv.add(golv);
+
+	
+
+
+
+
+	
 
 	//Set the rendering settings
 	render_options();
@@ -98,7 +158,11 @@ function createscene()
 //rendreringsloopen behövs delas upp!!!!!
 function draw()
 {
-	
+
+	var delta = clock.getDelta();
+   	for (var i = 0; i < mixers.length; ++i){
+     mixers[i].update(delta); 
+   	}
 	
 
 	
@@ -192,7 +256,7 @@ function skapa_boll()
 function skapa_golv()
 {
 	//Skpapar bollen
-	var golvgeometry = new THREE.BoxGeometry( 10, 0.5, 10)
+	var golvgeometry = new THREE.BoxGeometry( 500, 5, 500)
 	
 	//Material till bollen
 	var golvmaterial = new THREE.MeshBasicMaterial;
@@ -212,21 +276,6 @@ function skapa_golv()
 	golv = new THREE.Mesh( golvgeometry, golvmaterial );
 }
 
-function stack()
-{
-	//Först roterar vi allt för vi vill ha en vy snett uppifrån
-	scene.add(kamera_initial_pos);
-
-	//Flyttar och lägger till golvet
-	kamera_initial_pos.add(flytta_golv);
-	flytta_golv.add(golv);
-
-	//Lägger till tangentrörelserna och bollen
-	kamera_initial_pos.add(person_förflyttning);
-	person_förflyttning.add(person_rotationside);
-	person_rotationside.add(person_rotationup);
-	person_rotationup.add(boll);
-}
 
 function render_checkbox()
 {
@@ -289,21 +338,21 @@ addEventListener("keydown", function(event) {
 
 	if(keyboard.pressed("left"))
     {	
-	boll.position.x -= 0.1;
+	boll.position.x -= 5;
 	boll.rotation.y = Math.PI/2;
 	//speedX = -0.1;
 	
 	}
 	if(keyboard.pressed("right"))
     {	
-	boll.position.x += 0.1;
+	boll.position.x += 5;
 	boll.rotation.y = -Math.PI/2;
 	//speedX = 0.1;
 	
 	}
 	if(keyboard.pressed("up"))
     {	
-	boll.position.z -= 0.1;
+	boll.position.z -= 5;
 	boll.rotation.y = 0;
 	//speedZ = -0.1;
 	
@@ -311,7 +360,7 @@ addEventListener("keydown", function(event) {
 	
 	if(keyboard.pressed("down"))
     {	
-	boll.position.z += 0.1;
+	boll.position.z += 5;
 	boll.rotation.y = Math.PI;
 	//speedZ = 0.1;
 	
@@ -321,7 +370,7 @@ addEventListener("keydown", function(event) {
 	if(keyboard.pressed("space"))
     {	
     	if(!(in_air)){
-    		speedY = 0.3;
+    		speedY = 0.8;
 
     	}
 	}
