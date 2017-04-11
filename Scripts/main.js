@@ -118,13 +118,13 @@ function createscene()
 	               	{
 	                  	
 	                  
-		                var mixer = new THREE.AnimationMixer(mesh);
-		                mixers.push(mixer);
-		                mixer.clipAction(mesh.geometry.animations[0]).play();
+		                var up = new THREE.AnimationMixer(mesh);
+		                mixers.push(up);
+		                up.clipAction(mesh.geometry.animations[0]).play();
 
-		                //var mixer = new THREE.AnimationMixer(mesh);
-		               // mixers.push(mixer);
-		                //mixer.clipAction(mesh.geometry.animations).play();
+		                var hoger = new THREE.AnimationMixer(mesh);
+		               	mixers.push(hoger);
+		                hoger.clipAction(mesh.geometry.animations[1]).play();
 	                 
              		}
                }
@@ -159,10 +159,6 @@ function createscene()
 function draw()
 {
 
-	var delta = clock.getDelta();
-   	for (var i = 0; i < mixers.length; ++i){
-     mixers[i].update(delta); 
-   	}
 	
 
 	
@@ -340,20 +336,31 @@ addEventListener("keydown", function(event) {
     {	
 	boll.position.x -= 5;
 	boll.rotation.y = Math.PI/2;
-	//speedX = -0.1;
+	var delta = clock.getDelta();
+   	for (var i = 0; i < mixers.length; ++i){
+    	mixers[0].update(delta); 
+   	}
 	
 	}
 	if(keyboard.pressed("right"))
     {	
 	boll.position.x += 5;
 	boll.rotation.y = -Math.PI/2;
-	//speedX = 0.1;
+	var delta = clock.getDelta();
+   	for (var i = 0; i < mixers.length; ++i){
+    	mixers[0].update(delta); 
+   	}
 	
 	}
 	if(keyboard.pressed("up"))
     {	
 	boll.position.z -= 5;
 	boll.rotation.y = 0;
+	var delta = clock.getDelta();
+   	for (var i = 0; i < mixers.length; ++i){
+    	mixers[1].update(delta); 
+   	}
+	
 	//speedZ = -0.1;
 	
 	}
