@@ -103,7 +103,7 @@ function createscene()
 
 	scene.add(kamera_initial_pos);
 	kamera_initial_pos.add(boll);
-	loader.load("./Models/jorden.jd",
+	loader.load("./Models/jorden_stilla.jd",
     function (data)
     {
                var multiMaterial = new THREE.MultiMaterial(data.materials);
@@ -150,18 +150,11 @@ function createscene()
 	canvas.appendChild(renderer.domElement);
 
 	render_checkbox();
-
-	
-
 }
 
 //rendreringsloopen behövs delas upp!!!!!
 function draw()
 {
-
-	
-
-	
 	// draw THREE.JS scene
 	renderer.render(scene, camera);
 	rendererStats.update(renderer);
@@ -396,3 +389,4 @@ addEventListener("keydown", function(event) {
 */
 
 }
+
