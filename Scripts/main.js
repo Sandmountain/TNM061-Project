@@ -168,10 +168,9 @@ function draw()
 	setTimeout(function() {
        
 
-        if(keyboard.pressed("left")||keyboard.pressed("right")||keyboard.pressed("up")||keyboard.pressed("down") || keyboard.pressed("space"))
-    	{	
+       
         	movement();
-    	}
+    	
       	
         //
       	requestAnimationFrame(draw);
