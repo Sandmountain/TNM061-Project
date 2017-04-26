@@ -46,11 +46,11 @@ var material;
 
 //Sätter golv där de ska vara
 var flytta_golv = new THREE.Group();
-flytta_golv.translateY(-50);
+flytta_golv.translateY(17);
 
 //Vrider kameran så att man ser snett uppifrån
 var kamera_initial_pos = new THREE.Group();
-kamera_initial_pos.rotation.x = Math.PI/4;
+kamera_initial_pos.rotation.x = -Math.PI/5;
 kamera_initial_pos.translateZ(-1)
 
 // Huvudpersonensförflyttning
@@ -100,9 +100,13 @@ function createscene()
 	directionalLight.position.set( 5, 5, 5 ).normalize();
 	scene.add( directionalLight );
 
+	scene.add(golv);
+	golv.add(flytta_golv);
+	flytta_golv.add(boll);
 
-	scene.add(kamera_initial_pos);
-	kamera_initial_pos.add(boll);
+
+	//scene.add(kamera_initial_pos);
+	//kamera_initial_pos.add(boll);
 	loader.load("./Models/jorden_stilla.jd",
     function (data)
     {
@@ -130,12 +134,14 @@ function createscene()
                }
     });
 	
-	kamera_initial_pos.add(flytta_golv);
-	flytta_golv.add(golv);
+	//kamera_initial_pos.add(flytta_golv);
+	//flytta_golv.add(golv);
 
 	
 
-
+	
+	boll.add(kamera_initial_pos);
+	kamera_initial_pos.add(camera);
 
 
 	
@@ -195,7 +201,7 @@ function draw()
 
 	//boll.position.x += speedX;
 	//boll.position.z += speedZ;
-	boll.position.y += speedY + grav*(n/30);
+	boll.position.y += speedY + grav*(n/2);
 	//boll.position.x += speedX;
 	console.log(grav);
 
@@ -279,101 +285,69 @@ function render_checkbox()
 
 
 function movement(){
-/*
-addEventListener("keydown", function(event) {
-    switch(event.keyCode){
-    	case 87: //upp
-    		speedZ = -0.1;
-    	break;
-    	case 83: //down
-    		speedZ = 0.1;
-    	break;
-    	case 65: //left
-    		speedX = -0.1;
-    	break;
-    	case 68: //right
-    		speedX = 0.1;
-    	break;
-    	case 32: //space
-    		speedY =  0.2;
-    	break;
 
-
-
-    }
-     
-  });
-  addEventListener("keyup", function(event) {
-    switch(event.keyCode){
-    	case 87: //upp
-    		speedZ = 0;
-    	break;
-    	case 83: //down
-    		speedZ = 0;
-    	break;
-    	case 65: //left
-    		speedX = 0;
-    	break;
-    	case 68: //right
-    		speedX = 0;
-    	break;
-    	case 32: //space
-    		speedY =  -0.1;
-    	break;
-     }
-  });*/
+	//var delta = clock.getDelta(); // seconds.
+	var moveDistance = 3;//200 * delta; // 200 pixels per second
+	var rotateAngle = Math.PI/50; //Math.PI / 2 * delta;   // pi/2 radians (90 degrees) per second
 
 
 
 	if(keyboard.pressed("left"))
     {	
-	boll.position.x -= 5;
-	boll.rotation.y = Math.PI/2;
-	var delta = clock.getDelta();
-   	for (var i = 0; i < mixers.length; ++i){
-    	mixers[0].update(delta); 
-   	}
+	//boll.position.x -= 0.1;
+	//boll.rotation.y += Math.PI/2;
+	//speedX = -0.1;
+	boll.rotateOnAxis( new THREE.Vector3(0,1,0), rotateAngle);
+	
 	
 	}
 	if(keyboard.pressed("right"))
     {	
-	boll.position.x += 5;
-	boll.rotation.y = -Math.PI/2;
-	var delta = clock.getDelta();
-   	for (var i = 0; i < mixers.length; ++i){
-    	mixers[0].update(delta); 
-   	}
+	//boll.position.x += 0.1;
+	//boll.rotation.y = -Math.PI/2;
+	//speedX = 0.1;
+	boll.rotateOnAxis( new THREE.Vector3(0,1,0), -rotateAngle);
+
 	
 	}
 	if(keyboard.pressed("up"))
     {	
-	boll.position.z -= 5;
-	boll.rotation.y = 0;
-	var delta = clock.getDelta();
-   	for (var i = 0; i < mixers.length; ++i){
-    	mixers[1].update(delta); 
-   	}
-	
+	//boll.position.z -= 0.1;
+	//boll.rotation.y = 0;
 	//speedZ = -0.1;
+	
+	boll.translateZ( -moveDistance );
 	
 	}
 	
 	if(keyboard.pressed("down"))
     {	
-	boll.position.z += 5;
-	boll.rotation.y = Math.PI;
+	//dboll.position.z += 0.1;
+	//boll.rotation.y = Math.PI;
 	//speedZ = 0.1;
+	boll.translateZ( moveDistance );
+	
+	}
+	if(keyboard.pressed("QLeft"))
+    {	
+	boll.translateX( -moveDistance );
 	
 	}
 
+	if(keyboard.pressed("ERigth"))
+    {	
+	boll.translateX( moveDistance );
+	}
 
 	if(keyboard.pressed("space"))
     {	
     	if(!(in_air)){
-    		speedY = 0.8;
+    		speedY = 5;
 
     	}
 	}
+
+
 
 /*
 addEventListener("keydown", function(event) {
