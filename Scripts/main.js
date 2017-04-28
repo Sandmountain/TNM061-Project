@@ -25,6 +25,7 @@ var cBollJumpPos;
 var cBollJumpPos2;
 
 var collision;
+var collidableMeshList = [];
 //Klass som handskar tangenbordstryck
 var keyboard= new THREEx.KeyboardState();
 
@@ -190,20 +191,27 @@ function createscene()
 	canvas.appendChild(renderer.domElement);
 
 	render_checkbox();
-}
 
+}
+var myFunc = function(){
+	collidableMeshList.push(boxobject);
+     myFunc = function(){}; // kill it as soon as it was called
+     console.log('call once and never again!'); // your stuff here
+};
 //rendreringsloopen behövs delas upp!!!!!
 function draw()
 {
 	// draw THREE.JS scene
 	renderer.render(scene, camera);
 	rendererStats.update(renderer);
+
 	// Loopar över draw functionen och sänker fps'n till 60fps
 	setTimeout(function() {
 
 	playerobject = new THREE.Box3().setFromObject(boll);
 	boxobject = new THREE.Box3().setFromObject(kub);
 	
+	myFunc();
 
 	cBollJump = boll.clone();
 	cBollJump2 = boll.clone();
@@ -237,29 +245,40 @@ function draw()
 	}*/
 
 	
-	
+	gravity();
+
+	console.log(collidableMeshList.length);
+    }, 1000 / fps);
+
+
+}
+function gravity(){
+
 	cBollJumpPos = cBollJump.translateY(-10).translateZ(-15).translateX(15).position;
 	cBollJumpPos2 = cBollJump2.translateY(-10).translateZ(15).translateX(-15).position;
 	/*console.log('först:');
 	console.log(cBollJumpPos);
 	console.log('andra:');
 	console.log(cBollJumpPos2);*/
-
-	if(boll.position.y > 10 && !(boxobject.containsPoint(cBollJumpPos)) && !(boxobject.containsPoint(cBollJumpPos2))){
+	for (var i = 0; i < collidableMeshList.length; i++)
+	{	
+	if(boll.position.y > 10 && !(collidableMeshList[i].containsPoint(cBollJumpPos)) && !(collidableMeshList[i].containsPoint(cBollJumpPos2))){
 		in_air = true;
 		n++;
 			
 	}
 	if(in_air){
-		if( boll.position.y <= 10 || boxobject.containsPoint(cBollJumpPos)|| boxobject.containsPoint(cBollJumpPos2)){
+		if( boll.position.y <= 10 || collidableMeshList[i].containsPoint(cBollJumpPos)|| collidableMeshList[i].containsPoint(cBollJumpPos2)){
 			speedY = 0;
 			
 		}
 	}
-	if( boll.position.y <= 10 || boxobject.containsPoint(cBollJumpPos) || boxobject.containsPoint(cBollJumpPos2)){
+	if( boll.position.y <= 10 || collidableMeshList[i].containsPoint(cBollJumpPos) || collidableMeshList[i].containsPoint(cBollJumpPos2)){
 				setTimeout(function() {in_air = false;}, 10);
 				//in_air = false;
 				n = 0;
+
+	}
 
 	}
 	//console.log(playerobject.intersectsBox(boxobject))
@@ -285,14 +304,10 @@ function draw()
 	//boll.position.z += speedZ;
 	boll.position.y += speedY + grav*(n/2);
 	//boll.position.x += speedX;
+
+
 	
-
-
-    }, 1000 / fps);
-
-
 }
-
 
 //Sätter renderings inställningar
 function render_options(){
