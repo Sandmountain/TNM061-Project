@@ -164,8 +164,10 @@ function createscene()
 	                 
              		}*/
                }
+
     });
 	
+	boll.castShadow= true;
 	//kamera_initial_pos.add(flytta_golv);
 	//flytta_golv.add(golv);
 
@@ -236,8 +238,8 @@ function draw()
 
 	
 	
-	cBollJumpPos = cBollJump.translateY(-10).translateZ(-20).translateX(20).position;
-	cBollJumpPos2 = cBollJump2.translateY(-10).translateZ(20).translateX(-20).position;
+	cBollJumpPos = cBollJump.translateY(-10).translateZ(-15).translateX(15).position;
+	cBollJumpPos2 = cBollJump2.translateY(-10).translateZ(15).translateX(-15).position;
 	/*console.log('först:');
 	console.log(cBollJumpPos);
 	console.log('andra:');
