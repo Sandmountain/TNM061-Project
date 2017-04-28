@@ -1,0 +1,41 @@
+GITHUB GUIDE ÅT LUCAS FÖR HAN ÄR RETARD
+
+1. Ladda upp
+- git pull
+	Pulla alltid först, annars kommer det inte gå att få in den.
+	Om man får mergefel, måste du gå in i filen och ta bort det som inte ska vara där. Ofta markerat med <<<<<<<<<<<<<<<<<
+-git add --a
+	adderar alla filer, om du bara ska laddda upp en fil så skriv sökvägen och filnamnet istället för --a
+	t. ex "git add Models/Almond.max
+-git commit -m 'Nån text'
+-git push
+
+Om inte vanliga git push funkar så kan
+- git push origin master
+	funka. På samma sätt med git pull --> git pull origin master
+
+2. Ladda ner
+- git pull
+	Inte så jävla komplicerat, om man får mergefel så gör som ovan
+
+3. Ta bort en mapp/fil från repositoryt
+- git rm -r "namnet på filen/mappen" 
+	inga "" i cmd
+
+4. Om allt skiter sig så deleta alla mappar och sen
+- git clone
+	I rätt mapp
+
+5. Första gången du använder git på en dator eller i en annan map måste du skriva 
+- git init
+
+- git remote add origin "http//bajskuk.com"
+
+- git remote -v
+	verifierar så adressen finns
+
+6. Om du är i fel branch eller allt bara fuckar, kör
+- git fetch --all
+	Löser problemen ibland. Har ingen jävla aning om vad det gör dock. Är typ git pull + git merge eller nån skit.
+
+
