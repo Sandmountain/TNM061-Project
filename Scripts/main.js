@@ -59,7 +59,7 @@ flytta_golv.translateY(17);
 
 //Vrider kameran så att man ser snett uppifrån
 var kamera_initial_pos = new THREE.Group();
-kamera_initial_pos.rotation.x = -Math.PI/2;
+kamera_initial_pos.rotation.x = -Math.PI/5;
 kamera_initial_pos.translateZ(-1)
 
 // Huvudpersonensförflyttning
@@ -238,10 +238,10 @@ function draw()
 	
 	cBollJumpPos = cBollJump.translateY(-10).translateZ(-20).translateX(20).position;
 	cBollJumpPos2 = cBollJump2.translateY(-10).translateZ(20).translateX(-20).position;
-	console.log('först:');
+	/*console.log('först:');
 	console.log(cBollJumpPos);
 	console.log('andra:');
-	console.log(cBollJumpPos2);
+	console.log(cBollJumpPos2);*/
 
 	if(boll.position.y > 10 && !(boxobject.containsPoint(cBollJumpPos)) && !(boxobject.containsPoint(cBollJumpPos2))){
 		in_air = true;
