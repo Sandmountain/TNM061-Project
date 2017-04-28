@@ -13,9 +13,18 @@ var windowHalfX = window.innerWidth ;
 var windowHalfY = window.innerHeight ;
 
 // Mina object som skapas.
-var boll, golv;
+var boll, golv, kub;
 boll = new THREE.Group();
+kub = new THREE.Group();
+var Cboll = new THREE.Group();
+var cBoll2 = new THREE.Group();
 
+var cBollJump = new THREE.Group();
+var cBollJump2 = new THREE.Group();
+var cBollJumpPos;
+var cBollJumpPos2;
+
+var collision;
 //Klass som handskar tangenbordstryck
 var keyboard= new THREEx.KeyboardState();
 
@@ -50,7 +59,7 @@ flytta_golv.translateY(17);
 
 //Vrider kameran så att man ser snett uppifrån
 var kamera_initial_pos = new THREE.Group();
-kamera_initial_pos.rotation.x = -Math.PI/5;
+kamera_initial_pos.rotation.x = -Math.PI/2;
 kamera_initial_pos.translateZ(-1)
 
 // Huvudpersonensförflyttning
@@ -102,11 +111,34 @@ function createscene()
 
 	scene.add(golv);
 	golv.add(flytta_golv);
-	flytta_golv.add(boll);
+	
 
+	scene.add(kub)
+
+	loader.load("./Models/kub.jd",
+    function (data)
+    {
+               var multiMaterial = new THREE.MultiMaterial(data.materials);
+               for (var i = 0; i < data.geometries.length; ++i)
+               {
+	                var mesh = new THREE.SkinnedMesh(data.geometries[i], multiMaterial);
+	                meshes.push(mesh);
+	                kub.add(mesh);
+					
+					
+					if(mesh.isGeometry){
+						console.log("JaaA");
+					}
+					boxhelper = new THREE.BoxHelper( mesh, 0xffff00 );
+					scene.add(boxhelper);
+					
+               }
+			   
+    });
 
 	//scene.add(kamera_initial_pos);
 	//kamera_initial_pos.add(boll);
+	flytta_golv.add(boll);
 	loader.load("./Models/jorden_stilla.jd",
     function (data)
     {
@@ -118,7 +150,7 @@ function createscene()
 	                boll.add(mesh);
 	               
 
-	                if (mesh.geometry.animations)
+	              /*  if (mesh.geometry.animations)
 	               	{
 	                  	
 	                  
@@ -130,7 +162,7 @@ function createscene()
 		               	mixers.push(hoger);
 		                hoger.clipAction(mesh.geometry.animations[1]).play();
 	                 
-             		}
+             		}*/
                }
     });
 	
@@ -166,8 +198,27 @@ function draw()
 	rendererStats.update(renderer);
 	// Loopar över draw functionen och sänker fps'n till 60fps
 	setTimeout(function() {
-       
 
+	playerobject = new THREE.Box3().setFromObject(boll);
+	boxobject = new THREE.Box3().setFromObject(kub);
+	
+
+	cBollJump = boll.clone();
+	cBollJump2 = boll.clone();
+	cBoll = boll.clone();
+	cBoll2 = boll.clone();
+
+	//raycaster.setFromCamera( boll, camera );
+	//collision = raycaster.intersectObject( kub, true);
+	
+	
+	//collision = playerobject.intersectsBox(boxobject);
+   	//console.log(collision);
+
+     
+    
+    
+	
        
         	movement();
     	
@@ -182,27 +233,57 @@ function draw()
 		boll.position.y -=  0.0982;
 		can_jump = false;
 	}*/
-	if(boll.position.y > 0){
+
+	
+	
+	cBollJumpPos = cBollJump.translateY(-10).translateZ(-20).translateX(20).position;
+	cBollJumpPos2 = cBollJump2.translateY(-10).translateZ(20).translateX(-20).position;
+	console.log('först:');
+	console.log(cBollJumpPos);
+	console.log('andra:');
+	console.log(cBollJumpPos2);
+
+	if(boll.position.y > 10 && !(boxobject.containsPoint(cBollJumpPos)) && !(boxobject.containsPoint(cBollJumpPos2))){
 		in_air = true;
 		n++;
 			
 	}
 	if(in_air){
-		if( boll.position.y <= 0){
+		if( boll.position.y <= 10 || boxobject.containsPoint(cBollJumpPos)|| boxobject.containsPoint(cBollJumpPos2)){
 			speedY = 0;
+			
 		}
 	}
-	if( boll.position.y <= 0){
-				setTimeout(function() {in_air = false;}, 100);
-				
+	if( boll.position.y <= 10 || boxobject.containsPoint(cBollJumpPos) || boxobject.containsPoint(cBollJumpPos2)){
+				setTimeout(function() {in_air = false;}, 10);
+				//in_air = false;
 				n = 0;
-	}
 
+	}
+	//console.log(playerobject.intersectsBox(boxobject))
+
+/*	if(boll.position.y > 10 && !(playerobject.intersectsBox(boxobject))){
+		in_air = true;
+		n++;
+			
+	}
+	if(in_air){
+		if( boll.position.y <= 10 || playerobject.intersectsBox(boxobject)){
+			speedY = 0;
+			
+		}
+	}
+	if( boll.position.y <= 10 || playerobject.intersectsBox(boxobject)){
+				setTimeout(function() {in_air = false;}, 10);
+				//in_air = false;
+				n = 0;
+
+	}*/
 	//boll.position.x += speedX;
 	//boll.position.z += speedZ;
 	boll.position.y += speedY + grav*(n/2);
 	//boll.position.x += speedX;
-	console.log(grav);
+	
 
 
     }, 1000 / fps);
@@ -250,7 +331,7 @@ function skapa_boll()
 function skapa_golv()
 {
 	//Skpapar bollen
-	var golvgeometry = new THREE.BoxGeometry( 500, 5, 500)
+	var golvgeometry = new THREE.BoxGeometry( 5000, 5, 5000)
 	
 	//Material till bollen
 	var golvmaterial = new THREE.MeshBasicMaterial;
@@ -314,8 +395,17 @@ function movement(){
 	//boll.position.z -= 0.1;
 	//boll.rotation.y = 0;
 	//speedZ = -0.1;
+	/*console.log('första:');
+	console.log(cBoll.translateZ(-20).translateX(15).position);
+	console.log('andra:');
+	console.log(cBoll2.translateZ(-20).translateX(-15).position);*/
+
+	if(!(boxobject.containsPoint(cBoll.translateZ(-20).translateX(15).position)) && !(boxobject.containsPoint(cBoll2.translateZ(-20).translateX(-15).position))){
+		
+		boll.translateZ( -moveDistance );
+	}
+		
 	
-	boll.translateZ( -moveDistance );
 	
 	}
 	
@@ -324,24 +414,30 @@ function movement(){
 	//dboll.position.z += 0.1;
 	//boll.rotation.y = Math.PI;
 	//speedZ = 0.1;
+	if(!(boxobject.containsPoint(cBoll.translateZ(20).translateX(15).position)) && !(boxobject.containsPoint(cBoll2.translateZ(20).translateX(-15).position))){
 	boll.translateZ( moveDistance );
+	}
 	
 	}
 	if(keyboard.pressed("QLeft"))
     {	
+	if(!(boxobject.containsPoint(cBoll.translateX(-20).translateZ(15).position)) && !(boxobject.containsPoint(cBoll2.translateX(-20).translateZ(-15).position))){
 	boll.translateX( -moveDistance );
+	}
 	
 	}
 
 	if(keyboard.pressed("ERigth"))
     {	
+	if(!(boxobject.containsPoint(cBoll.translateX(20).translateZ(15).position)) && !(boxobject.containsPoint(cBoll2.translateX(20).translateZ(-15).position))){
 	boll.translateX( moveDistance );
+	}
 	}
 
 	if(keyboard.pressed("space"))
     {	
     	if(!(in_air)){
-    		speedY = 5;
+    		speedY = 10; //5
 
     	}
 	}
@@ -353,7 +449,6 @@ addEventListener("keydown", function(event) {
     if (event.keyCode == 32){
     	if(!(in_air)){
     		speedY = 0.3;
-
     	}
      		
     }
@@ -362,4 +457,3 @@ addEventListener("keydown", function(event) {
 */
 
 }
-
