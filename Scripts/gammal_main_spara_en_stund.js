@@ -3,7 +3,7 @@
 ////*****************////
 
 //FPS Detta behlvs byta ut mot tid delta
-var fps = 60;
+var fps = 120;
 
 // De viktiga variablerna för kamera osv
 var camera, scene, renderer,rendererStats, canvas;
@@ -12,23 +12,25 @@ var n = 0;
 var windowHalfX = window.innerWidth ;
 var windowHalfY = window.innerHeight ;
 
+var hiss = false;
+
 //Lista med url till modeller
-var player_url = "./Models/Mandel/Animation.JD";
+var player_url = "./Models/Animation .JD";
 var model_url = ["./Models/Levels/Level2/golv1.jd","./Models/Levels/Level2/lada1.jd","./Models/Levels/Level2/vagg1.jd","./Models/Levels/Level2/vagg2.jd","./Models/Levels/Level2/vagg3.jd","./Models/Levels/Level2/vagg4.jd"];
 var objectiv_url = "./Models/Levels/Level1/key.jd";
 
 //Object som skapas
-var player;
+var player, objectiv;
 var models = [model_url.length];
 
 //Kollisions variablerna
 var boxobject = [model_url.length];
 var objectiv_crash;
 
+
 // Mina object som skapas.
 var Cboll = new THREE.Group();
 var cBoll2 = new THREE.Group();
-var cBoll3 = new THREE.Group();
 var cBollJump = new THREE.Group();
 var cBollJump2 = new THREE.Group();
 var cBollJumpPos;
@@ -36,13 +38,14 @@ var cBollJumpPos2;
 
 var collision;
 var collidableMeshList = [model_url.lenght];
-
 //Klass som handskar tangenbordstryck
 var keyboard= new THREEx.KeyboardState();
 
 var can_jump = true;
 var in_air = false;
 var grav = -0.5;
+
+var still_count = 0;
 
 
 
@@ -51,12 +54,6 @@ var speedY = 0;
 var speedZ = 0;
 
 var veloY = 0;
-
-//Flyttar box
-var hiss = false;
-
-//Räknar frames som gubben står stilla
-var still_count = 0;
 
 //Variable for modell
 var meshes = [];
@@ -95,24 +92,21 @@ function createscene()
 	
 	//Uppsättning av kameran med perspektivmatris och avstånd
 	camera = new THREE.PerspectiveCamera( 50, window.innerWidth/window.innerHeight, 0.1, 10000);
-	camera.position.z = 500;
+	camera.position.z = 700;
 	
 	//Skapar scenen
 	scene = new THREE.Scene();
-	
+
+
 	//Här skapar jag scengrafen
-	var ambient = new THREE.AmbientLight( 0x444444 );
+	var ambient = new THREE.AmbientLight( 0x444444, 1 );
 	scene.add( ambient );
 	
 	var directionalLight = new THREE.DirectionalLight( 0xffeedd );
-	directionalLight.position.set( 5, 5, 5 ).normalize();
+	directionalLight.position.set( 50, 50, 50 ).normalize();
 	scene.add( directionalLight );
 
-	
-	/*******************************************
-	*************Laddar modellerna**************
-	*******************************************/
-	//Object
+	//Laddar modellerna
 	for(var i = 0; i<model_url.length; ++i){	
 		models[i] = new Mloader(model_url[i],false)
 		modell_loader(models[i]);
@@ -127,6 +121,8 @@ function createscene()
 	player = new Mloader(player_url,true)
 	modell_loader(player);
 	scene.add(player.object);
+	
+	
 	player.object.translateY(100);	
 	player.object.add(kamera_initial_pos);
 	kamera_initial_pos.add(camera);
@@ -146,19 +142,18 @@ function createscene()
 
 }
 
-//renderingsloop
+//rendreringsloopen behövs delas upp!!!!!
 function draw()
 {
-	// Loopar över draw functionen och sänker fps'n till 60fps
 	setTimeout(function() {
+	
 	// draw THREE.JS scene
 	renderer.render(scene, camera);
 	rendererStats.update(renderer);
-
-	//Kör animationer
+	
 	if(keyboard.pressed("up") || keyboard.pressed("down")){
 	var delta = clock.getDelta();
-		player.mixers[5].update(delta); 
+		player.mixers[3].update(delta); 
 		still_count = 0;
 	}else{
 		still_count ++;
@@ -173,7 +168,12 @@ function draw()
 		}
 	}
 	
-	//Skapar kollisionsobjecten
+    
+
+
+	// Loopar över draw functionen och sänker fps'n till 60fps
+	
+
 	for(var i=0; i <models.length;++i){
 		boxobject[i] = new THREE.Box3().setFromObject(models[i].object);
 	}
@@ -185,19 +185,9 @@ function draw()
 	cBollJump2 = player.object.clone();
 	cBoll = player.object.clone();
 	cBoll2 = player.object.clone();
-	cBoll3 = player.object.clone();
 
-	//raycaster.setFromCamera( boll, camera );
-	//collision = raycaster.intersectObject( kub, true);
-	
-	
-	//collision = playerobject.intersectsBox(boxobject);
-   	//console.log(collision);
-
-    
-	
-    gravity();
 	movement();
+	gravity();
 	if(player_crash.intersectsBox(objectiv_crash)){
 		objectiv.object.visible= false;
 		hiss = true;
@@ -206,34 +196,19 @@ function draw()
 	if(hiss){
 		models[1].object.position.y += 2;
 	}
-      	
-        //
+	
+
+
     requestAnimationFrame(draw);
- 
-        // ... Code for Drawing the Frame ...
-        //boll.position.z += speedZ;
-        //gravitation
-    /*if(boll.position.y > 0){
-		boll.position.y -=  0.0982;
-		can_jump = false;
-	}*/
 
-	
-	
-
-	
     }, 1000 / fps);
 
 
 }
 function gravity(){
-	/*var bollPos = cBollJump.position;
-	var pos1 = new THREE.Vector3(10,0,-10);
-	var pos2 = new THREE.Vector3(-10,0,10);
-	pos1.add(bollPos);
-	pos2.add(bollPos);*/
-	cBollJumpPos = cBollJump.translateY(-5).translateZ(-5).translateX(10).position;
-	cBollJumpPos2 = cBollJump2.translateY(-5).translateZ(5).translateX(-10).position;
+
+	cBollJumpPos = cBollJump.translateY(-25).translateZ(-15).translateX(15).position;
+	cBollJumpPos2 = cBollJump2.translateY(-25).translateZ(15).translateX(-15).position;
 	/*console.log('först:');
 	console.log(cBollJumpPos);
 	console.log('andra:');
@@ -258,7 +233,6 @@ function gravity(){
 	
 	if(in_air){
 		if( bool){
-			
 			speedY = 0;
 		
 		}
@@ -267,7 +241,6 @@ function gravity(){
 
 	if(bool){
 				setTimeout(function() {in_air = false;}, 10);
-
 				//in_air = false;
 				n = 0;
 
@@ -321,7 +294,6 @@ function onWindowResize() {
 				renderer.setSize( window.innerWidth, window.innerHeight );
 			}
 
-
 function render_checkbox()
 {
 	rendererStats= new THREEx.RendererStats()
@@ -337,9 +309,9 @@ function render_checkbox()
 function movement(){
 
 	//var delta = clock.getDelta(); // seconds.
-	var moveDistance = 5;//200 * delta; // 200 pixels per second
+	var moveDistance = 10;//200 * delta; // 200 pixels per second
 	var rotateAngle = Math.PI/50; //Math.PI / 2 * delta;   // pi/2 radians (90 degrees) per second
-	
+
 	
 
 	if(keyboard.pressed("left"))
@@ -367,12 +339,12 @@ function movement(){
 	console.log(cBoll.translateZ(-20).translateX(15).position);
 	console.log('andra:');
 	console.log(cBoll2.translateZ(-20).translateX(-15).position);*/
-
-			if(collision(-15,15,-15,-15)){
+		for(var i =0;i<boxobject.length;++i){
+			if(!(boxobject[i].containsPoint(cBoll.translateZ(-20).translateX(15).position)) && !(boxobject[i].containsPoint(cBoll2.translateZ(-20).translateX(-15).position))){
 				
 				player.object.translateZ( -moveDistance );
 			}
-		
+		}
 		
 	
 	
@@ -383,80 +355,54 @@ function movement(){
 	//dboll.position.z += 0.1;
 	//boll.rotation.y = Math.PI;
 	//speedZ = 0.1;
-		
-			if(collision(15,15,15,-15)){
+		for(var i =0;i<boxobject.length;++i){	
+			if(!(boxobject[i].containsPoint(cBoll.translateZ(20).translateX(15).position)) && !(boxobject[i].containsPoint(cBoll2.translateZ(20).translateX(-15).position))){
 			player.object.translateZ( moveDistance );
 			}
-		
+		}
 	}
 	if(keyboard.pressed("QLeft"))
     {	
-		
-			if(collision2(-15,15,-15,-15)){
+		for(var i =0;i<boxobject.length;++i){
+			if(!(boxobject[i].containsPoint(cBoll.translateX(-20).translateZ(15).position)) && !(boxobject[i].containsPoint(cBoll2.translateX(-20).translateZ(-15).position))){
 			player.object.translateX( -moveDistance );
-		
+		}
 	}
 	
 	}
 
 	if(keyboard.pressed("ERigth"))
     {	
-		
-			if(collision2(15,15,15,-15)){
+		for(var i =0;i<boxobject.length;++i)
+		{
+			if(!(boxobject[i].containsPoint(cBoll.translateX(20).translateZ(15).position)) && !(boxobject[i].containsPoint(cBoll2.translateX(20).translateZ(-15).position))){
 			player.object.translateX( moveDistance );
 		}
-	
+	}
 	}
 
 	if(keyboard.pressed("space"))
     {	
     	if(!(in_air)){
-    		speedY = 6; //5
+    		speedY = 10; //5
 			
 
     	}
 	}
 
-}
-
-function collision(Zvalue, Xvalue, Zvalue2, Xvalue2){
-var Yvalue = 50;
-
-//för att göra om till vektor få tag på bollens postions i dens egna matrix, annars går det icke
 
 
-	for (var i = 0; i < boxobject.length; i++)
-	{
-		if(boxobject[i].containsPoint(cBoll.translateY(Yvalue).translateZ(Zvalue).translateX(Xvalue).position)|| boxobject[i].containsPoint(cBoll2.translateY(Yvalue).translateZ(Zvalue2).translateX(Xvalue2).position)
-			|| boxobject[i].containsPoint(cBoll3.translateY(3).translateZ(Zvalue).position)){
-		
-				return false;
-			
-			}
-
-	}
-	
-	return true;
-
-
-
-}
-function collision2(Xvalue, Zvalue, Xvalue2, Zvalue2){
-var Yvalue = 50;
-for (var i = 0; i < boxobject.length; i++)
-{
-	if(boxobject[i].containsPoint(cBoll.translateY(Yvalue).translateX(Xvalue).translateZ(Zvalue).position) || boxobject[i].containsPoint(cBoll2.translateY(Yvalue).translateX(Xvalue2).translateZ(Zvalue2).position)
-			|| boxobject[i].containsPoint(cBoll3.translateY(3).translateX(Xvalue).position)){
-			
-			return false;
-			
-		}
-
-}
-	
-	return true;
-
-
+/*
+addEventListener("keydown", function(event) {
+    if (event.keyCode == 32){
+    	if(!(in_air)){
+    		speedY = 0.3;
+    	}
+     		
+    }
+     
+  });
+*/
 
 }
 
@@ -493,20 +439,6 @@ modell_loader = function(object)
                      object.mixers[3]= mixer3;
                      mixer3.clipAction(mesh.geometry.animations[3]).play();
 					 
-					 var mixer4 = new THREE.AnimationMixer(mesh);
-                     object.mixers[4]= mixer4;
-                     mixer4.clipAction(mesh.geometry.animations[4]).play();
-					 
-					 var mixer5 = new THREE.AnimationMixer(mesh);
-                     object.mixers[5]= mixer5;
-                     mixer5.clipAction(mesh.geometry.animations[5]).play();
-					 
-					 var mixer6 = new THREE.AnimationMixer(mesh);
-                     object.mixers[6]= mixer6;
-                     mixer6.clipAction(mesh.geometry.animations[6]).play();
-					 
-					;
-					 
 					 
 					 
                   }
@@ -515,10 +447,3 @@ modell_loader = function(object)
 	});
 	
 } 
-
-
-
-
-
-
-
