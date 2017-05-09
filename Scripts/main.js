@@ -15,8 +15,15 @@ var windowHalfY = window.innerHeight ;
 
 //Lista med url till modeller
 var player_url = "./Models/Mandel/Animation.JD";
-var model_url = ["./Models/Levels/Level2/golv1.jd","./Models/Levels/Level2/lada1.jd","./Models/Levels/Level2/vagg1.jd","./Models/Levels/Level2/vagg2.jd","./Models/Levels/Level2/vagg3.jd","./Models/Levels/Level2/vagg4.jd"];
-var objectiv_url = "./Models/Levels/Level1/key.jd";
+//var model_url = ["./Models/Levels/Level2/golv1.jd","./Models/Levels/Level2/lada1.jd","./Models/Levels/Level2/vagg1.jd","./Models/Levels/Level2/vagg2.jd","./Models/Levels/Level2/vagg3.jd","./Models/Levels/Level2/vagg4.jd"];
+var model_url = ["./Models/Levels/Level_1/doorh.jd","./Models/Levels/Level_1/doorv.jd","./Models/Levels/Level_1/barrel1.jd","./Models/Levels/Level_1/barrel2.jd"
+,"./Models/Levels/Level_1/barrel3.jd","./Models/Levels/Level_1/barrel4.jd","./Models/Levels/Level_1/barrel5.jd","./Models/Levels/Level_1/fence1.jd"
+,"./Models/Levels/Level_1/fence2.jd","./Models/Levels/Level_1/floor.jd","./Models/Levels/Level_1/kortsida1.jd","./Models/Levels/Level_1/kortsida2.jd"
+,"./Models/Levels/Level_1/lada1.jd","./Models/Levels/Level_1/lada2.jd","./Models/Levels/Level_1/lada3.jd","./Models/Levels/Level_1/lada4.jd"
+,"./Models/Levels/Level_1/lada5.jd","./Models/Levels/Level_1/lada6.jd","./Models/Levels/Level_1/lada7.jd","./Models/Levels/Level_1/lada8.jd"
+,"./Models/Levels/Level_1/lastpall.jd","./Models/Levels/Level_1/lastpall2.jd","./Models/Levels/Level_1/lastpall3.jd","./Models/Levels/Level_1/lastpall4.jd"
+,"./Models/Levels/Level_1/longsida1.jd","./Models/Levels/Level_1/longsida2.jd","./Models/Levels/Level_1/pipe.jd","./Models/Levels/Level_1/platta.jd"];
+var objectiv_url = "./Models/Levels/Level_1/key.jd";
 
 //Object som skapas
 var player;
@@ -73,8 +80,8 @@ var material;
 //// Tansformationer ////
 ////*****************////
 
-//Vrider kameran så att man ser snett uppifrån
 var kamera_initial_pos = new THREE.Group();
+//Vrider kameran så att man ser snett uppifrån
 kamera_initial_pos.rotation.x = -Math.PI/8;
 kamera_initial_pos.translateZ(-1)
 
@@ -251,7 +258,14 @@ function draw()
 	}
 	
 	if(hiss){
-		models[1].object.position.y += 2;
+		if(models[0].object.position.x>-200){
+			models[0].object.position.x -= 2;
+		}
+		if(models[1].object.position.x<200){
+			models[1].object.position.x += 2;
+		}
+		
+		
 	}
       	
         //
@@ -278,10 +292,15 @@ function gravity(){
 	
 	var bool = Collision(boxiObjGround);
 	
+	
+		
+	
 	if(bool)
 		{
 			in_air = true;
-			n++;
+			if(n<150){
+				n++;
+			}
 	 }	
 	
 	if(in_air){
@@ -347,7 +366,7 @@ function render_checkbox()
 function movement(){
 
 	//var delta = clock.getDelta(); // seconds.
-	var moveDistance = 10;//200 * delta; // 200 pixels per second
+	var moveDistance = 14;//200 * delta; // 200 pixels per second
 	var rotateAngle = Math.PI/50; //Math.PI / 2 * delta;   // pi/2 radians (90 degrees) per second
 	
 	
@@ -421,7 +440,7 @@ function movement(){
 	if(keyboard.pressed("space"))
     {	
     	if(!(in_air)){
-    		speedY = 12; //5
+    		speedY = 15; //5
 			
 
     	}
