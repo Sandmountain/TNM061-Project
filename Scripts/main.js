@@ -4,6 +4,7 @@
 
 //FPS Detta behlvs byta ut mot tid delta
 var fps = 60;
+var A_speed = 4;
 
 // De viktiga variablerna för kamera osv
 var camera, scene, renderer,rendererStats, canvas;
@@ -57,6 +58,7 @@ var hiss = false;
 
 //Räknar frames som gubben står stilla
 var still_count = 0;
+var hopp_count = 0;
 
 //Variable for modell
 var meshes = [];
@@ -73,7 +75,7 @@ var material;
 
 //Vrider kameran så att man ser snett uppifrån
 var kamera_initial_pos = new THREE.Group();
-kamera_initial_pos.rotation.x = -Math.PI/5;
+kamera_initial_pos.rotation.x = -Math.PI/8;
 kamera_initial_pos.translateZ(-1)
 
 ////*****************////
@@ -95,7 +97,8 @@ function createscene()
 	
 	//Uppsättning av kameran med perspektivmatris och avstånd
 	camera = new THREE.PerspectiveCamera( 50, window.innerWidth/window.innerHeight, 0.1, 10000);
-	camera.position.z = 500;
+	camera.position.z = 800;
+	
 	
 	//Skapar scenen
 	scene = new THREE.Scene();
@@ -104,8 +107,9 @@ function createscene()
 	var ambient = new THREE.AmbientLight( 0x444444 );
 	scene.add( ambient );
 	
+	
 	var directionalLight = new THREE.DirectionalLight( 0xffeedd );
-	directionalLight.position.set( 5, 5, 5 ).normalize();
+	directionalLight.position.set(0 , 100, 0 ).normalize();
 	scene.add( directionalLight );
 
 	
@@ -207,22 +211,7 @@ function draw()
 	rendererStats.update(renderer);
 
 	//Kör animationer
-	if(keyboard.pressed("up") || keyboard.pressed("down")){
-	var delta = clock.getDelta();
-		player.mixers[5].update(delta); 
-		still_count = 0;
-	}else{
-		still_count ++;
-		if(still_count >=120 && still_count<= 180){
-			var delta = clock.getDelta();
-			//for (var i = 0; i <  player.mixers.length; ++i)
-			player.mixers[1].update(delta);
-			if(still_count ===180){
-				still_count = 0;
-				player.mixers[1].time = 0;
-			}
-		}
-	}
+	animation_chooser();
 	
 	//Skapar kollisionsobjecten
 	for(var i=0; i <models.length;++i){
@@ -316,7 +305,7 @@ function gravity(){
 
 	}
 
-	player.object.position.y += speedY + grav*(n/2);
+	player.object.position.y += speedY + grav*(n);
 	
 
 
@@ -358,7 +347,7 @@ function render_checkbox()
 function movement(){
 
 	//var delta = clock.getDelta(); // seconds.
-	var moveDistance = 5;//200 * delta; // 200 pixels per second
+	var moveDistance = 10;//200 * delta; // 200 pixels per second
 	var rotateAngle = Math.PI/50; //Math.PI / 2 * delta;   // pi/2 radians (90 degrees) per second
 	
 	
@@ -432,7 +421,7 @@ function movement(){
 	if(keyboard.pressed("space"))
     {	
     	if(!(in_air)){
-    		speedY = 8; //5
+    		speedY = 12; //5
 			
 
     	}
@@ -514,6 +503,67 @@ modell_loader = function(object)
 	
 } 
 
+
+animation_chooser = function(){
+	var fuck_javascript = 1;
+	if(keyboard.pressed("space") || hopp_count !=0){
+	
+		player.mixers[0].clipAction(player.meshes[0].geometry.animations[0]).play();
+		
+		
+		if(hopp_count<=1.05/2){
+			for (var i = 0; i < player.mixers.length; ++i){
+				player.mixers[0].update(1/60*fuck_javascript*A_speed*2);	
+				fuck_javascript = 0;
+			}
+			hopp_count+=1/60*A_speed;
+		}else if(hopp_count<=3){
+			for (var i = 0; i < player.mixers.length; ++i)
+				player.mixers[0].clipAction(player.meshes[0].geometry.animations[0]).stop();
+			
+			player.mixers[1].clipAction(player.meshes[0].geometry.animations[1]).play();
+			for (var i = 0; i < player.mixers.length; ++i){
+				player.mixers[1].update(1/60*fuck_javascript*A_speed);	
+				fuck_javascript = 0;
+			}
+			hopp_count+=1/60*A_speed;
+			
+			
+		}else if(hopp_count >3 && hopp_count<3.5){
+				for (var i = 0; i < player.mixers.length; ++i)
+					player.mixers[1].clipAction(player.meshes[0].geometry.animations[1]).stop();
+				player.mixers[2].clipAction(player.meshes[0].geometry.animations[2]).play();
+				for (var i = 0; i < player.mixers.length; ++i){
+					player.mixers[2].update(1/60*fuck_javascript*A_speed);	
+					fuck_javascript = 0;
+				}
+				hopp_count+=1/60*A_speed;
+		}else{
+			for (var i = 0; i < player.mixers.length; ++i)
+					player.mixers[2].clipAction(player.meshes[0].geometry.animations[2]).stop();
+			hopp_count = 0;
+		}
+	}else if((keyboard.pressed("up") || keyboard.pressed("down")) ){
+		player.mixers[5].clipAction(player.meshes[0].geometry.animations[5]).play();
+		if((keyboard.pressed("up") || keyboard.pressed("down")) ){
+			for(var i = 0; i < player.mixers.length; ++i){
+				player.mixers[5].update(1/60*A_speed*fuck_javascript);
+				fuck_javascript = 0;
+			}
+			still_count += 1/60*A_speed;
+		}
+	}else{
+		var fuck_javascript = 1;
+		for (var i = 0; i < player.mixers.length; ++i){
+			player.mixers[3].update(1/60*fuck_javascript*A_speed);
+			fuck_javascript = 0;
+		}
+		for (var i = 0; i < player.mixers.length; ++i){
+			player.mixers[5].clipAction(player.meshes[0].geometry.animations[5]).stop();
+		}
+	}
+	
+}
 
 
 
