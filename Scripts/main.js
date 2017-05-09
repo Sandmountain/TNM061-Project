@@ -14,7 +14,7 @@ var windowHalfX = window.innerWidth ;
 var windowHalfY = window.innerHeight ;
 
 //Lista med url till modeller
-var player_url = "./Models/Mandel/Animation.JD";
+var player_url = "./Models/Mandel/animationRotated.JD";
 //var model_url = ["./Models/Levels/Level2/golv1.jd","./Models/Levels/Level2/lada1.jd","./Models/Levels/Level2/vagg1.jd","./Models/Levels/Level2/vagg2.jd","./Models/Levels/Level2/vagg3.jd","./Models/Levels/Level2/vagg4.jd"];
 var model_url = ["./Models/Levels/Level_1/doorh.jd","./Models/Levels/Level_1/doorv.jd","./Models/Levels/Level_1/barrel1.jd","./Models/Levels/Level_1/barrel2.jd"
 ,"./Models/Levels/Level_1/barrel3.jd","./Models/Levels/Level_1/barrel4.jd","./Models/Levels/Level_1/barrel5.jd","./Models/Levels/Level_1/fence1.jd"
@@ -264,7 +264,10 @@ function draw()
 		if(models[1].object.position.x<200){
 			models[1].object.position.x += 2;
 		}
-		
+		if(player.object.position.z>1960){
+			console.log("fuck you")
+		}
+		console.log(player.object.position.z)
 		
 	}
       	

@@ -6,14 +6,20 @@
     },
     "materials": [
         {
-            "name": "Material__48",
+            "name": "vaggg",
             "diffuse": [1,1,1],
             "specular": [0,0,0],
             "glossiness": 10,
             "opacity": 1,
             "maps": [
                 {
-                    "name": "Map__33",
+                    "name": "Map__11",
+                    "type": "diffuse",
+                    "uvsIndex": 0,
+                    "file": "wall_texture1.jpg"
+                },
+                {
+                    "name": "Map__28",
                     "type": "opacity",
                     "uvsIndex": 0,
                     "file": "fence_texture.jpg"
