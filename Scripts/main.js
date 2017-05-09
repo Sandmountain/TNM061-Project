@@ -131,6 +131,31 @@ function createscene()
 	player.object.add(kamera_initial_pos);
 	kamera_initial_pos.add(camera);
 
+	create_collisionBox()
+	player.object.add(boxiF);
+	boxiF.translateZ(-40).translateY(50).translateX(5);
+	//box bak
+	player.object.add(boxiB);
+	boxiB.translateZ(55).translateY(50).translateX(5);
+	//box Right
+	player.object.add(boxiR);
+	boxiR.translateZ(5).translateY(50).translateX(40);
+	//Box LEft
+	player.object.add(boxiL);
+	boxiL.translateZ(5).translateY(50).translateX(-30);
+	//Box ground
+	player.object.add(boxiG);
+	boxiG.translateZ(5).translateY(-2).translateX(10);
+	//box top
+	player.object.add(boxiT);
+	boxiT.translateZ(15).translateY(100).translateX(10);
+	
+	boxiL.visible = false;
+	boxiR.visible = false;
+	boxiB.visible = false;
+	boxiF.visible = false;
+	boxiG.visible = false;
+	boxiT.visible = false;
 	
 
 	//Set the rendering settings
@@ -145,6 +170,32 @@ function createscene()
 	render_checkbox();
 
 }
+function create_collisionBox()
+{
+	//Skpapar bollen
+	var boxfB = new THREE.BoxGeometry( 70, 80, 5);
+	var boxLR = new THREE.BoxGeometry( 5, 80, 70);
+	var boxT = new THREE.CylinderGeometry( 35, 35, 5);
+	var boxG = new THREE.CylinderGeometry( 25, 25, 5,20);
+	
+	
+	//Material till bollen
+	var golvmaterial = new THREE.MeshBasicMaterial;
+	
+	// Texture laddar variabel
+	
+	
+	
+	// Lägger in geometrin och materialet på vårt object
+	boxiF = new THREE.Mesh( boxfB, golvmaterial );
+	boxiL = new THREE.Mesh( boxLR, golvmaterial );
+	boxiB = new THREE.Mesh( boxfB, golvmaterial );
+	boxiR = new THREE.Mesh( boxLR, golvmaterial );
+	boxiT = new THREE.Mesh( boxT, golvmaterial );
+	boxiG = new THREE.Mesh( boxG, golvmaterial);
+
+}	
+
 
 //renderingsloop
 function draw()
@@ -180,6 +231,13 @@ function draw()
 	objectiv_crash = new THREE.Box3().setFromObject(objectiv.object);
 	var player_crash = new THREE.Box3().setFromObject(player.object);
 	
+	boxiObjFront = new THREE.Box3().setFromObject(boxiF);
+	boxiObjBack = new THREE.Box3().setFromObject(boxiB);
+	boxiObjLeft = new THREE.Box3().setFromObject(boxiL);
+	boxiObjRight = new THREE.Box3().setFromObject(boxiR);
+	boxiObjGround = new THREE.Box3().setFromObject(boxiG);
+	boxiObjTop = new THREE.Box3().setFromObject(boxiT);
+
 	//myFunc(boxobject);
 	cBollJump = player.object.clone();
 	cBollJump2 = player.object.clone();
@@ -196,7 +254,7 @@ function draw()
 
     
 	
-    gravity();
+    gravity(boxiObjGround, boxiObjTop);
 	movement();
 	if(player_crash.intersectsBox(objectiv_crash)){
 		objectiv.object.visible= false;
@@ -227,37 +285,22 @@ function draw()
 
 }
 function gravity(){
-	/*var bollPos = cBollJump.position;
-	var pos1 = new THREE.Vector3(10,0,-10);
-	var pos2 = new THREE.Vector3(-10,0,10);
-	pos1.add(bollPos);
-	pos2.add(bollPos);*/
-	cBollJumpPos = cBollJump.translateY(-5).translateZ(-5).translateX(10).position;
-	cBollJumpPos2 = cBollJump2.translateY(-5).translateZ(5).translateX(-10).position;
-	/*console.log('först:');
-	console.log(cBollJumpPos);
-	console.log('andra:');
-	console.log(cBollJumpPos2);*/
 	
-	var bool = false;
 	
-	for (var i = 0; i < boxobject.length; i++)
-	{
-		if( boxobject[i].containsPoint(cBollJumpPos)|| boxobject[i].containsPoint(cBollJumpPos2)){
-			bool = true;
-		
-		}
-
-	}
+	var bool = Collision(boxiObjGround);
 	
-	if(!(bool))
+	if(bool)
 		{
 			in_air = true;
 			n++;
 	 }	
 	
 	if(in_air){
-		if( bool){
+		if(!(Collision(boxiObjTop))){
+			speedY=0;
+			n+=5;
+		}
+		if( !bool){
 			
 			speedY = 0;
 		
@@ -265,38 +308,16 @@ function gravity(){
 	}
 	
 
-	if(bool){
+	if(!bool){
 				setTimeout(function() {in_air = false;}, 10);
 
 				//in_air = false;
 				n = 0;
 
 	}
-	
-	
-	//console.log(playerobject.intersectsBox(boxobject))
 
-/*	if(boll.position.y > 10 && !(playerobject.intersectsBox(boxobject))){
-		in_air = true;
-		n++;
-			
-	}
-	if(in_air){
-		if( boll.position.y <= 10 || playerobject.intersectsBox(boxobject)){
-			speedY = 0;
-			
-		}
-	}
-	if( boll.position.y <= 10 || playerobject.intersectsBox(boxobject)){
-				setTimeout(function() {in_air = false;}, 10);
-				//in_air = false;
-				n = 0;
-
-	}*/
-	//boll.position.x += speedX;
-	//boll.position.z += speedZ;
 	player.object.position.y += speedY + grav*(n/2);
-	//boll.position.x += speedX;
+	
 
 
 	
@@ -368,7 +389,7 @@ function movement(){
 	console.log('andra:');
 	console.log(cBoll2.translateZ(-20).translateX(-15).position);*/
 
-			if(collision(-15,15,-15,-15)){
+			if(Collision(boxiObjFront)){
 				
 				player.object.translateZ( -moveDistance );
 			}
@@ -384,7 +405,7 @@ function movement(){
 	//boll.rotation.y = Math.PI;
 	//speedZ = 0.1;
 		
-			if(collision(15,15,15,-15)){
+			if(Collision(boxiObjBack)){
 			player.object.translateZ( moveDistance );
 			}
 		
@@ -392,7 +413,7 @@ function movement(){
 	if(keyboard.pressed("QLeft"))
     {	
 		
-			if(collision2(-15,15,-15,-15)){
+			if(Collision(boxiObjLeft)){
 			player.object.translateX( -moveDistance );
 		
 	}
@@ -402,7 +423,7 @@ function movement(){
 	if(keyboard.pressed("ERigth"))
     {	
 		
-			if(collision2(15,15,15,-15)){
+			if(Collision(boxiObjRight)){
 			player.object.translateX( moveDistance );
 		}
 	
@@ -411,7 +432,7 @@ function movement(){
 	if(keyboard.pressed("space"))
     {	
     	if(!(in_air)){
-    		speedY = 6; //5
+    		speedY = 8; //5
 			
 
     	}
@@ -419,40 +440,17 @@ function movement(){
 
 }
 
-function collision(Zvalue, Xvalue, Zvalue2, Xvalue2){
-var Yvalue = 50;
-
-//för att göra om till vektor få tag på bollens postions i dens egna matrix, annars går det icke
+function Collision(obj){
 
 
 	for (var i = 0; i < boxobject.length; i++)
 	{
-		if(boxobject[i].containsPoint(cBoll.translateY(Yvalue).translateZ(Zvalue).translateX(Xvalue).position)|| boxobject[i].containsPoint(cBoll2.translateY(Yvalue).translateZ(Zvalue2).translateX(Xvalue2).position)
-			|| boxobject[i].containsPoint(cBoll3.translateY(3).translateZ(Zvalue).position)){
-		
+		if(boxobject[i].intersectsBox(obj)){	
 				return false;
 			
 			}
 
 	}
-	
-	return true;
-
-
-
-}
-function collision2(Xvalue, Zvalue, Xvalue2, Zvalue2){
-var Yvalue = 50;
-for (var i = 0; i < boxobject.length; i++)
-{
-	if(boxobject[i].containsPoint(cBoll.translateY(Yvalue).translateX(Xvalue).translateZ(Zvalue).position) || boxobject[i].containsPoint(cBoll2.translateY(Yvalue).translateX(Xvalue2).translateZ(Zvalue2).position)
-			|| boxobject[i].containsPoint(cBoll3.translateY(3).translateX(Xvalue).position)){
-			
-			return false;
-			
-		}
-
-}
 	
 	return true;
 
