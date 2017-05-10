@@ -17,20 +17,24 @@ var windowHalfY = window.innerHeight ;
 var player_url = "./Models/Mandel/animationRotated.JD";
 //var model_url = ["./Models/Levels/Level2/golv1.jd","./Models/Levels/Level2/lada1.jd","./Models/Levels/Level2/vagg1.jd","./Models/Levels/Level2/vagg2.jd","./Models/Levels/Level2/vagg3.jd","./Models/Levels/Level2/vagg4.jd"];
 var model_url = ["./Models/Levels/Level_1/doorh.jd","./Models/Levels/Level_1/doorv.jd","./Models/Levels/Level_1/barrel1.jd","./Models/Levels/Level_1/barrel2.jd","./Models/Levels/Level_1/barrel3.jd","./Models/Levels/Level_1/barrel4.jd","./Models/Levels/Level_1/barrel5.jd"
-,"./Models/Levels/Level_1/fencewall1.jd","./Models/Levels/Level_1/fencewall2.jd","./Models/Levels/Level_1/floor.jd","./Models/Levels/Level_1/kortsida1.jd","./Models/Levels/Level_1/kortsida2.jd"
-,"./Models/Levels/Level_1/lada1.jd","./Models/Levels/Level_1/lada2.jd","./Models/Levels/Level_1/lada3.jd","./Models/Levels/Level_1/lada4.jd"
-,"./Models/Levels/Level_1/lada5.jd","./Models/Levels/Level_1/lada6.jd","./Models/Levels/Level_1/lada7.jd","./Models/Levels/Level_1/lada8.jd"
-,"./Models/Levels/Level_1/lastpall.jd","./Models/Levels/Level_1/lastpall2.jd","./Models/Levels/Level_1/lastpall3.jd","./Models/Levels/Level_1/lastpall4.jd"
-,"./Models/Levels/Level_1/longsida1.jd","./Models/Levels/Level_1/longsida2.jd","./Models/Levels/Level_1/pipe.jd","./Models/Levels/Level_1/platta.jd","./Models/Levels/Level_1/fencewall3.jd","./Models/Levels/Level_1/fencewall4.jd","./Models/Levels/Level_1/fencewall5.jd","./Models/Levels/Level_1/fencewall6.jd"];
+,"./Models/Levels/Level_1/fencewall1.jd","./Models/Levels/Level_1/fencewall2.jd","./Models/Levels/Level_1/floor.jd","./Models/Levels/Level_1/kortsida1.jd","./Models/Levels/Level_1/kortsida2.jd","./Models/Levels/Level_1/lada1.jd","./Models/Levels/Level_1/lada2.jd"
+,"./Models/Levels/Level_1/lada3.jd","./Models/Levels/Level_1/lada4.jd","./Models/Levels/Level_1/lada5.jd","./Models/Levels/Level_1/lada6.jd","./Models/Levels/Level_1/lada7.jd","./Models/Levels/Level_1/lada8.jd"
+,"./Models/Levels/Level_1/lastpall.jd","./Models/Levels/Level_1/lastpall2.jd","./Models/Levels/Level_1/lastpall3.jd","./Models/Levels/Level_1/lastpall4.jd","./Models/Levels/Level_1/longsida1.jd","./Models/Levels/Level_1/longsida2.jd","./Models/Levels/Level_1/pipe.jd"
+,"./Models/Levels/Level_1/platta.jd","./Models/Levels/Level_1/fencewall3.jd","./Models/Levels/Level_1/fencewall4.jd","./Models/Levels/Level_1/fencewall5.jd","./Models/Levels/Level_1/fencewall6.jd"];
 var objectiv_url = "./Models/Levels/Level_1/key.jd";
+var Exit_url = "./Models/Levels/Level_1/Exit.jd";
 
 //Object som skapas
 var player;
 var models = [model_url.length];
+var Exit;
+
 
 //Kollisions variablerna
 var boxobject = [model_url.length];
 var objectiv_crash;
+var Exit_crash;
+var stop = true;
 
 // Mina object som skapas.
 var Cboll = new THREE.Group();
@@ -145,7 +149,11 @@ function createscene()
 	player.object.add(kamera_initial_pos);
 	kamera_initial_pos.add(camera);
 	
-	
+	//laddar exit
+	Exit = new Mloader(Exit_url,false)
+	modell_loader(Exit);
+	scene.add(Exit.object);
+	Exit.object.visible = false;
 	
 	create_collisionBox()
 	player.object.add(boxiF);
@@ -200,8 +208,6 @@ function create_collisionBox()
 	
 	// Texture laddar variabel
 	
-	
-	
 	// Lägger in geometrin och materialet på vårt object
 	boxiF = new THREE.Mesh( boxfB, golvmaterial );
 	boxiL = new THREE.Mesh( boxLR, golvmaterial );
@@ -209,9 +215,7 @@ function create_collisionBox()
 	boxiR = new THREE.Mesh( boxLR, golvmaterial );
 	boxiT = new THREE.Mesh( boxT, golvmaterial );
 	boxiG = new THREE.Mesh( boxG, golvmaterial);
-
 }	
-
 
 //renderingsloop
 function draw()
@@ -245,15 +249,6 @@ function draw()
 	cBoll = player.object.clone();
 	cBoll2 = player.object.clone();
 	cBoll3 = player.object.clone();
-
-	//raycaster.setFromCamera( boll, camera );
-	//collision = raycaster.intersectObject( kub, true);
-	
-	
-	//collision = playerobject.intersectsBox(boxobject);
-   	//console.log(collision);
-
-    
 	
     gravity(boxiObjGround, boxiObjTop);
 	movement();
@@ -263,73 +258,59 @@ function draw()
 	}
 	
 	if(hiss){
+		
 		if(models[0].object.position.x>-200){
 			models[0].object.position.x -= 2;
 		}
 		if(models[1].object.position.x<200){
 			models[1].object.position.x += 2;
 		}
-		if(player.object.position.z>1960){
-			console.log("fuck you")
-		}
-		console.log(player.object.position.z)
+		Exit.object.visible = true;
 		
+		Exit_crash = new THREE.Box3().setFromObject(Exit.object);
+		console.log(player.object.position.z)
+		if(boxiObjBack.intersectsBox(Exit_crash)){
+			document.location.href = "file:///H:/TNM061/Projekt%200.9/TNM061.project/index.html" ;
+			stop = false;
+		}
 	}
-      	
-        //
-    requestAnimationFrame(draw);
- 
-        // ... Code for Drawing the Frame ...
-        //boll.position.z += speedZ;
-        //gravitation
-    /*if(boll.position.y > 0){
-		boll.position.y -=  0.0982;
-		can_jump = false;
-	}*/
+	
+    if(stop)  	
+		requestAnimationFrame(draw);
 
-	
-	
-
-	
     }, 1000 / fps);
 
 
 }
 function gravity(){
-	
-	
 	var bool = Collision(boxiObjGround);
-	
-	
-		
-	
+
 	if(bool)
+	{
+		in_air = true;
+		if(n<150)
 		{
-			in_air = true;
-			if(n<150){
-				n++;
-			}
-	 }	
+			n++;
+		}
+	}	
 	
 	if(in_air){
-		if(!(Collision(boxiObjTop))){
+		if(!(Collision(boxiObjTop)))
+		{
 			speedY=0;
 			n+=5;
 		}
-		if( !bool){
-			
+		if( !bool)
+		{
 			speedY = 0;
-		
 		}
 	}
 	
-
-	if(!bool){
-				setTimeout(function() {in_air = false;}, 10);
-
-				//in_air = false;
-				n = 0;
-
+	if(!bool)
+	{
+		setTimeout(function() {in_air = false;}, 10);
+		//in_air = false;
+		n = 0;
 	}
 
 	var speed = speedY + grav*(n);
@@ -381,102 +362,64 @@ function movement(){
 	//var delta = clock.getDelta(); // seconds.
 	var moveDistance = 14;//200 * delta; // 200 pixels per second
 	var rotateAngle = Math.PI/50; //Math.PI / 2 * delta;   // pi/2 radians (90 degrees) per second
-	
-	
 
 	if(keyboard.pressed("left"))
     {	
-	//boll.position.x -= 0.1;
-	//boll.rotation.y += Math.PI/2;
-	//speedX = -0.1;
 		player.object.rotateOnAxis( new THREE.Vector3(0,1,0), rotateAngle);
-	
-	
 	}
 	if(keyboard.pressed("right"))
     {	
-	//boll.position.x += 0.1;
-	//boll.rotation.y = -Math.PI/2;
-	//speedX = 0.1;
 		player.object.rotateOnAxis( new THREE.Vector3(0,1,0), -rotateAngle);
 	}
 	if(keyboard.pressed("down"))
     {	
-	//boll.position.z -= 0.1;
-	//boll.rotation.y = 0;
-	//speedZ = -0.1;
-	/*console.log('första:');
-	console.log(cBoll.translateZ(-20).translateX(15).position);
-	console.log('andra:');
-	console.log(cBoll2.translateZ(-20).translateX(-15).position);*/
+		if(Collision(boxiObjFront))
+		{	
+			player.object.translateZ( -moveDistance );
+		}
 
-			if(Collision(boxiObjFront)){
-				
-				player.object.translateZ( -moveDistance );
-			}
-		
-		
-	
-	
 	}
 	
 	if(keyboard.pressed("up"))
     {	
-	//dboll.position.z += 0.1;
-	//boll.rotation.y = Math.PI;
-	//speedZ = 0.1;
-		
-			if(Collision(boxiObjBack)){
+		if(Collision(boxiObjBack))
+		{
 			player.object.translateZ( moveDistance );
-			}
-		
+		}	
 	}
 	if(keyboard.pressed("QLeft"))
-    {	
-		
-			if(Collision(boxiObjLeft)){
+    {		
+		if(Collision(boxiObjLeft))
+		{
 			player.object.translateX( -moveDistance );
-		
-	}
-	
+		}
 	}
 
 	if(keyboard.pressed("ERigth"))
     {	
-		
-			if(Collision(boxiObjRight)){
+		if(Collision(boxiObjRight))
+		{
 			player.object.translateX( moveDistance );
 		}
-	
 	}
 
 	if(keyboard.pressed("space"))
     {	
     	if(!(in_air)){
     		speedY = 14; //5
-			
-
     	}
 	}
-
 }
 
 function Collision(obj){
-
-
 	for (var i = 0; i < boxobject.length; i++)
 	{
-		if(boxobject[i].intersectsBox(obj)){	
-				return false;
-			
-			}
-
-	}
-	
+		if(boxobject[i].intersectsBox(obj))
+		{	
+			return false;
+		}
+	}	
 	return true;
-
-
-
 }
 
 modell_loader = function(object)
@@ -523,11 +466,6 @@ modell_loader = function(object)
 					 var mixer6 = new THREE.AnimationMixer(mesh);
                      object.mixers[6]= mixer6;
                      mixer6.clipAction(mesh.geometry.animations[6]).play();
-					 
-					;
-					 
-					 
-					 
                   }
 			}
 		}
@@ -545,20 +483,20 @@ animation_chooser = function(){
 		
 		if(hopp_count<=1.05/2){
 			for (var i = 0; i < player.mixers.length; ++i){
-				player.mixers[0].update(1/60*fuck_javascript*A_speed*2);	
+				player.mixers[0].update(1/fps*fuck_javascript*A_speed*2);	
 				fuck_javascript = 0;
 			}
-			hopp_count+=1/60*A_speed;
+			hopp_count+=1/fps*A_speed;
 		}else if(hopp_count<=3){
 			for (var i = 0; i < player.mixers.length; ++i)
 				player.mixers[0].clipAction(player.meshes[0].geometry.animations[0]).stop();
 			
 			player.mixers[1].clipAction(player.meshes[0].geometry.animations[1]).play();
 			for (var i = 0; i < player.mixers.length; ++i){
-				player.mixers[1].update(1/60*fuck_javascript*A_speed);	
+				player.mixers[1].update(1/fps*fuck_javascript*A_speed);	
 				fuck_javascript = 0;
 			}
-			hopp_count+=1/60*A_speed;
+			hopp_count+=1/fps*A_speed;
 			
 			
 		}else if(hopp_count >3 && hopp_count<3.5){
@@ -566,10 +504,10 @@ animation_chooser = function(){
 					player.mixers[1].clipAction(player.meshes[0].geometry.animations[1]).stop();
 				player.mixers[2].clipAction(player.meshes[0].geometry.animations[2]).play();
 				for (var i = 0; i < player.mixers.length; ++i){
-					player.mixers[2].update(1/60*fuck_javascript*A_speed);	
+					player.mixers[2].update(1/fps*fuck_javascript*A_speed);	
 					fuck_javascript = 0;
 				}
-				hopp_count+=1/60*A_speed;
+				hopp_count+=1/fps*A_speed;
 		}else{
 			for (var i = 0; i < player.mixers.length; ++i)
 					player.mixers[2].clipAction(player.meshes[0].geometry.animations[2]).stop();
@@ -579,15 +517,15 @@ animation_chooser = function(){
 		player.mixers[5].clipAction(player.meshes[0].geometry.animations[5]).play();
 		if((keyboard.pressed("up") || keyboard.pressed("down")) ){
 			for(var i = 0; i < player.mixers.length; ++i){
-				player.mixers[5].update(1/60*A_speed*fuck_javascript);
+				player.mixers[5].update(1/fps*A_speed*fuck_javascript);
 				fuck_javascript = 0;
 			}
-			still_count += 1/60*A_speed;
+			still_count += 1/fps*A_speed;
 		}
 	}else{
 		var fuck_javascript = 1;
 		for (var i = 0; i < player.mixers.length; ++i){
-			player.mixers[3].update(1/60*fuck_javascript*A_speed);
+			player.mixers[3].update(1/fps*fuck_javascript*A_speed);
 			fuck_javascript = 0;
 		}
 		for (var i = 0; i < player.mixers.length; ++i){

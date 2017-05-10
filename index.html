@@ -1,34 +1,123 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<title>The Great Escape!</title>
-		<style>
-			body {
-				background-color: black;
-				width: 100%;
-				height: 100%;
-				overflow: hidden;
-			}
-			#gameCanvas {
-				background-color: black;
-				
-				margin: auto;
-			}
-			
-		</style>
-	</head>
-	<body onload='start();'>
-		<div id='canvas'></div>
-		<script src='./Scripts/three.js'></script>
-		<script src='./Scripts/threex.rendererstats.js'></script>
-		<script src='./Scripts/threex.keyboardstate.js'></script>
-		<script src='./Scripts/threex.universalloader.js'></script>
-		<script src="./Scripts/JDLoader.min.js"></script>
-		<script src="./Scripts/Mandeln_Loader.js"></script>
-		<script src="./Scripts/Detector.js"></script>
-		<script src='./Scripts/main.js'></script>
+<head>
+<meta charset ="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>The Great Escape</title>
 
-	</body>
+	<link rel="icon" href="img/mandeln.png">
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.4.1/snap.svg-min.js"></script>
+</head>
+<body>
+
+
+		
+
+<section id="top-image">
+<div></div>
+	
+	<div class="hoi">
+		<img src="img/Titel.png">
+		</div>
+		</div>
+	
+	<div class="container col-md-12">
+	
+	
+	
+	  <div class="col-md-2">
+	  <div class="panel-group" id="accordion">
+		  <div class="panel panel-default">
+		  <div class="panel-heading">
+			<h4 class="panel-title">
+			 <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">Controlls</a>
+			</h4>
+			</div>
+		 <div id="collapse1" class="panel-collapse collapse in">
+		 <div class="panel-body">
+
+			<li class="list-group-item">Move Forward <span class="badge">W</span></li>
+			<li class="list-group-item">Move Right <span class="badge">A</span></li>
+			<li class="list-group-item">Move Backwards <span class="badge">S</span></li>
+			<li class="list-group-item">Move Left <span class="badge">D</span></li>
+			<li class="list-group-item">Jump<span class="badge">space</span></li>
+			<br>
+			<li class="list-group-item">Mute Music <span class="badge">Z</span></li>
+			<li class="list-group-item">Mute Sound Effects<span class="badge">X</span></li>
+			<br>
+			<i> No animals were harmed during the making of this game</i>
+			</div>
+			</div>
+			<div class="panel panel-default">
+			  <div class="panel-heading">
+				<h4 class="panel-title">
+				  <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">Background Story</a>
+				</h4>
+			  </div>
+			  <div id="collapse2" class="panel-collapse collapse">
+				<div class="panel-body">
+				<li class="list-group-item"><i>Dr. Engelbrekt</i> was an evil nazi doctor, who made experiments on poor animals. <i>Mandeln</i> was a small armadillo who <i>Dr. Engelbrekt</i> found in the woods. When he was experimented on, his brain evolved into one which is more adapted than a human's.
+				He managed to escape from his cage, and now he's trying to esacpe from the doctor's factory.</li>
+				</div>
+			  </div>
+			</div>
+	  </div>
+	  </div>
+	</div>
+	
+	
+	
+	  
+	  
+	  <div class="col-sm-2"></div>
+		<div class="col-sm-4"><div class="logo" id="cont"></div></div>
+	 <div class="col-sm-2"></div>
+	 <div class="col-md-2">
+	 <div class="panel panel-default">
+	  <div class="panel-heading">
+			<h4 class="panel-title">
+			 <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">Copyright ©</a>
+			</h4>
+			</div>
+      <div id="collapse3" class="panel-collapse collapse">
+	  <div class="panel-body">
+	  <b>A 3D school project by: </b>
+	  <li class="list-group-item">Daniel Olsson</li>
+	  <li class="list-group-item">Erik Nilson</li>
+	  <li class="list-group-item">Lucas Rung</li>
+	  <li class="list-group-item">Isac Rydén</li>
+	  <li class="list-group-item">Jacob Nyman</li>
+	  <li class="list-group-item">Viktor Sandberg</li>
+	  </div>
+	  </div>
+	</div>
+	</div>
+
+</section>
+
+
+
+ <script src="Scripts/parallax.js"></script>
+<script>
+$(document).ready(function() {
+var movementStrength = 10;
+var height = movementStrength / $(window).height();
+var width = movementStrength / $(window).width();
+$("#top-image").mousemove(function(e){
+          var pageX = e.pageX - ($(window).width() / 2);
+          var pageY = e.pageY - ($(window).height() / 2);
+          var newvalueX = width * pageX * -1 - 30;
+          var newvalueY = height * pageY * -1 - 55;
+          $('#top-image').css("background-position", newvalueX+"px     "+newvalueY+"px");
+});
+});
+</script>
+
+</body>
 </html>

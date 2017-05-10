@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<title>The Great Escape!</title>
+		<link rel="icon" href="img/mandeln.png">
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.4.1/snap.svg-min.js"></script>
+		
+		<style>
+			body {
+				background-color: black;
+				width: 100%;
+				height: 100%;
+				overflow: hidden;
+			}
+			#gameCanvas {
+				background-color: black;
+				
+				margin: auto;
+			}
+			
+		</style>
+	</head>
+	<body onload='start();'>
+		<div id='canvas'></div>
+		<script src='./Scripts/three.js'></script>
+		<script src='./Scripts/threex.rendererstats.js'></script>
+		<script src='./Scripts/threex.keyboardstate.js'></script>
+		<script src='./Scripts/threex.universalloader.js'></script>
+		<script src="./Scripts/JDLoader.min.js"></script>
+		<script src="./Scripts/Mandeln_Loader.js"></script>
+		<script src="./Scripts/Detector.js"></script>
+		<script src='./Scripts/main.js'></script>
+
+	</body>
+</html>
