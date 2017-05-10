@@ -79,10 +79,14 @@ var material;
 ////*****************////
 //// Tansformationer ////
 ////*****************////
+var rotera = new THREE.Group();
+//Vrider kameran så att man ser snett uppifrån
+rotera.rotation.x = Math.PI;
 
 var kamera_initial_pos = new THREE.Group();
 //Vrider kameran så att man ser snett uppifrån
-kamera_initial_pos.rotation.x = -Math.PI/8;
+kamera_initial_pos.rotation.y = -Math.PI;
+kamera_initial_pos.rotation.x = Math.PI/8;
 kamera_initial_pos.translateZ(-1)
 
 ////*****************////
@@ -141,7 +145,9 @@ function createscene()
 	player.object.translateY(100);	
 	player.object.add(kamera_initial_pos);
 	kamera_initial_pos.add(camera);
-
+	
+	
+	
 	create_collisionBox()
 	player.object.add(boxiF);
 	boxiF.translateZ(-40).translateY(50).translateX(5);
@@ -395,7 +401,7 @@ function movement(){
 	//speedX = 0.1;
 		player.object.rotateOnAxis( new THREE.Vector3(0,1,0), -rotateAngle);
 	}
-	if(keyboard.pressed("up"))
+	if(keyboard.pressed("down"))
     {	
 	//boll.position.z -= 0.1;
 	//boll.rotation.y = 0;
@@ -415,7 +421,7 @@ function movement(){
 	
 	}
 	
-	if(keyboard.pressed("down"))
+	if(keyboard.pressed("up"))
     {	
 	//dboll.position.z += 0.1;
 	//boll.rotation.y = Math.PI;
@@ -448,7 +454,7 @@ function movement(){
 	if(keyboard.pressed("space"))
     {	
     	if(!(in_air)){
-    		speedY = 15; //5
+    		speedY = 14; //5
 			
 
     	}
