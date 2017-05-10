@@ -162,11 +162,11 @@ function createscene()
 	player.object.add(boxiB);
 	boxiB.translateZ(55).translateY(50).translateX(5);
 	//box Right
-	player.object.add(boxiR);
-	boxiR.translateZ(5).translateY(50).translateX(40);
-	//Box LEft
 	player.object.add(boxiL);
-	boxiL.translateZ(5).translateY(50).translateX(-30);
+	boxiL.translateZ(5).translateY(50).translateX(40);
+	//Box LEft
+	player.object.add(boxiR);
+	boxiR.translateZ(5).translateY(50).translateX(-30);
 	//Box ground
 	player.object.add(boxiG);
 	boxiG.translateZ(5).translateY(-2).translateX(10);
@@ -210,9 +210,9 @@ function create_collisionBox()
 	
 	// Lägger in geometrin och materialet på vårt object
 	boxiF = new THREE.Mesh( boxfB, golvmaterial );
-	boxiL = new THREE.Mesh( boxLR, golvmaterial );
-	boxiB = new THREE.Mesh( boxfB, golvmaterial );
 	boxiR = new THREE.Mesh( boxLR, golvmaterial );
+	boxiB = new THREE.Mesh( boxfB, golvmaterial );
+	boxiL = new THREE.Mesh( boxLR, golvmaterial );
 	boxiT = new THREE.Mesh( boxT, golvmaterial );
 	boxiG = new THREE.Mesh( boxG, golvmaterial);
 }	
@@ -391,7 +391,7 @@ function movement(){
     {		
 		if(Collision(boxiObjLeft))
 		{
-			player.object.translateX( -moveDistance );
+			player.object.translateX( moveDistance );
 		}
 	}
 
@@ -399,7 +399,7 @@ function movement(){
     {	
 		if(Collision(boxiObjRight))
 		{
-			player.object.translateX( moveDistance );
+			player.object.translateX( -moveDistance );
 		}
 	}
 
