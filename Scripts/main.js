@@ -16,13 +16,12 @@ var windowHalfY = window.innerHeight ;
 //Lista med url till modeller
 var player_url = "./Models/Mandel/animationRotated.JD";
 //var model_url = ["./Models/Levels/Level2/golv1.jd","./Models/Levels/Level2/lada1.jd","./Models/Levels/Level2/vagg1.jd","./Models/Levels/Level2/vagg2.jd","./Models/Levels/Level2/vagg3.jd","./Models/Levels/Level2/vagg4.jd"];
-var model_url = ["./Models/Levels/Level_1/doorh.jd","./Models/Levels/Level_1/doorv.jd","./Models/Levels/Level_1/barrel1.jd","./Models/Levels/Level_1/barrel2.jd"
-,"./Models/Levels/Level_1/barrel3.jd","./Models/Levels/Level_1/barrel4.jd","./Models/Levels/Level_1/barrel5.jd","./Models/Levels/Level_1/fence1.jd"
-,"./Models/Levels/Level_1/fence2.jd","./Models/Levels/Level_1/floor.jd","./Models/Levels/Level_1/kortsida1.jd","./Models/Levels/Level_1/kortsida2.jd"
+var model_url = ["./Models/Levels/Level_1/doorh.jd","./Models/Levels/Level_1/doorv.jd","./Models/Levels/Level_1/barrel1.jd","./Models/Levels/Level_1/barrel2.jd","./Models/Levels/Level_1/barrel3.jd","./Models/Levels/Level_1/barrel4.jd","./Models/Levels/Level_1/barrel5.jd"
+,"./Models/Levels/Level_1/fencewall1.jd","./Models/Levels/Level_1/fencewall2.jd","./Models/Levels/Level_1/floor.jd","./Models/Levels/Level_1/kortsida1.jd","./Models/Levels/Level_1/kortsida2.jd"
 ,"./Models/Levels/Level_1/lada1.jd","./Models/Levels/Level_1/lada2.jd","./Models/Levels/Level_1/lada3.jd","./Models/Levels/Level_1/lada4.jd"
 ,"./Models/Levels/Level_1/lada5.jd","./Models/Levels/Level_1/lada6.jd","./Models/Levels/Level_1/lada7.jd","./Models/Levels/Level_1/lada8.jd"
 ,"./Models/Levels/Level_1/lastpall.jd","./Models/Levels/Level_1/lastpall2.jd","./Models/Levels/Level_1/lastpall3.jd","./Models/Levels/Level_1/lastpall4.jd"
-,"./Models/Levels/Level_1/longsida1.jd","./Models/Levels/Level_1/longsida2.jd","./Models/Levels/Level_1/pipe.jd","./Models/Levels/Level_1/platta.jd"];
+,"./Models/Levels/Level_1/longsida1.jd","./Models/Levels/Level_1/longsida2.jd","./Models/Levels/Level_1/pipe.jd","./Models/Levels/Level_1/platta.jd","./Models/Levels/Level_1/fencewall3.jd","./Models/Levels/Level_1/fencewall4.jd","./Models/Levels/Level_1/fencewall5.jd","./Models/Levels/Level_1/fencewall6.jd"];
 var objectiv_url = "./Models/Levels/Level_1/key.jd";
 
 //Object som skapas
