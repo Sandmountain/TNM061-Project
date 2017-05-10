@@ -274,7 +274,10 @@ function draw()
 			stop = false;
 		}
 	}
-	
+	if(keyboard.pressed("escape")){
+		document.location.href = "file:///H:/TNM061/Projekt%200.9/TNM061.project/index.html" ;
+		stop = false;
+	}
     if(stop)  	
 		requestAnimationFrame(draw);
 
@@ -387,7 +390,7 @@ function movement(){
 			player.object.translateZ( moveDistance );
 		}	
 	}
-	if(keyboard.pressed("QLeft"))
+	if(keyboard.pressed("ERigth"))
     {		
 		if(Collision(boxiObjLeft))
 		{
@@ -395,7 +398,7 @@ function movement(){
 		}
 	}
 
-	if(keyboard.pressed("ERigth"))
+	if(keyboard.pressed("QLeft"))
     {	
 		if(Collision(boxiObjRight))
 		{
