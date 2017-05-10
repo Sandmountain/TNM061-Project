@@ -327,7 +327,12 @@ function gravity(){
 
 	}
 
-	player.object.position.y += speedY + grav*(n);
+	var speed = speedY + grav*(n);
+	if(speed < -15){
+		speed = -15;
+	}
+
+	player.object.position.y += speed;
 	
 
 
