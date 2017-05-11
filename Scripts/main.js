@@ -280,7 +280,10 @@ function draw()
 	}
     if(stop)  	
 		requestAnimationFrame(draw);
-
+	
+	/*console.log("x: " +player.object.position.x)
+	console.log("y: " +player.object.position.y)
+	console.log("z: " +player.object.position.z)*/
     }, 1000 / fps);
 
 
@@ -316,7 +319,7 @@ function gravity(){
 		n = 0;
 	}
 
-	var speed = speedY + grav*(n);
+	var speed = speedY + grav*(n*3);
 	if(speed < -15){
 		speed = -15;
 	}
@@ -363,7 +366,7 @@ function render_checkbox()
 function movement(){
 
 	//var delta = clock.getDelta(); // seconds.
-	var moveDistance = 14;//200 * delta; // 200 pixels per second
+	var moveDistance = 18;//200 * delta; // 200 pixels per second
 	var rotateAngle = Math.PI/50; //Math.PI / 2 * delta;   // pi/2 radians (90 degrees) per second
 
 	if(keyboard.pressed("left"))
@@ -409,7 +412,7 @@ function movement(){
 	if(keyboard.pressed("space"))
     {	
     	if(!(in_air)){
-    		speedY = 14; //5
+    		speedY = 24; //5
     	}
 	}
 }
@@ -460,7 +463,7 @@ modell_loader = function(object)
 					 
 					 var mixer4 = new THREE.AnimationMixer(mesh);
                      object.mixers[4]= mixer4;
-                     mixer4.clipAction(mesh.geometry.animations[4]).play();
+                    // mixer4.clipAction(mesh.geometry.animations[4]).play();
 					 
 					 var mixer5 = new THREE.AnimationMixer(mesh);
                      object.mixers[5]= mixer5;
@@ -468,7 +471,7 @@ modell_loader = function(object)
 					 
 					 var mixer6 = new THREE.AnimationMixer(mesh);
                      object.mixers[6]= mixer6;
-                     mixer6.clipAction(mesh.geometry.animations[6]).play();
+                     //mixer6.clipAction(mesh.geometry.animations[6]).play();
                   }
 			}
 		}
@@ -480,17 +483,16 @@ modell_loader = function(object)
 animation_chooser = function(){
 	var fuck_javascript = 1;
 	if(keyboard.pressed("space") || hopp_count !=0){
-	
 		player.mixers[0].clipAction(player.meshes[0].geometry.animations[0]).play();
 		
 		
-		if(hopp_count<=1.05/2){
+		if(hopp_count<=player.meshes[0].geometry.animations[0].duration/2){
 			for (var i = 0; i < player.mixers.length; ++i){
 				player.mixers[0].update(1/fps*fuck_javascript*A_speed*2);	
 				fuck_javascript = 0;
 			}
 			hopp_count+=1/fps*A_speed;
-		}else if(hopp_count<=3){
+		}else if(hopp_count<=player.meshes[0].geometry.animations[0].duration+player.meshes[0].geometry.animations[1].duration){
 			for (var i = 0; i < player.mixers.length; ++i)
 				player.mixers[0].clipAction(player.meshes[0].geometry.animations[0]).stop();
 			
@@ -502,9 +504,12 @@ animation_chooser = function(){
 			hopp_count+=1/fps*A_speed;
 			
 			
-		}else if(hopp_count >3 && hopp_count<3.5){
-				for (var i = 0; i < player.mixers.length; ++i)
+		}else if(hopp_count<=player.meshes[0].geometry.animations[0].duration + player.meshes[0].geometry.animations[1].duration + player.meshes[0].geometry.animations[0].duration){
+				for (var i = 0; i < player.mixers.length; ++i){
 					player.mixers[1].clipAction(player.meshes[0].geometry.animations[1]).stop();
+					player.mixers[0].clipAction(player.meshes[0].geometry.animations[0]).stop();
+				}
+				
 				player.mixers[2].clipAction(player.meshes[0].geometry.animations[2]).play();
 				for (var i = 0; i < player.mixers.length; ++i){
 					player.mixers[2].update(1/fps*fuck_javascript*A_speed);	
@@ -533,9 +538,14 @@ animation_chooser = function(){
 		}
 		for (var i = 0; i < player.mixers.length; ++i){
 			player.mixers[5].clipAction(player.meshes[0].geometry.animations[5]).stop();
+			player.mixers[2].clipAction(player.meshes[0].geometry.animations[2]).stop();
+			player.mixers[1].clipAction(player.meshes[0].geometry.animations[1]).stop();
+			player.mixers[0].clipAction(player.meshes[0].geometry.animations[0]).stop();
 		}
 	}
 	
+
+	//console.log(hopp_count); 
 }
 
 
