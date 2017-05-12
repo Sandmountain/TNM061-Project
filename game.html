@@ -13,6 +13,7 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.4.1/snap.svg-min.js"></script>
+	<script src='./Scripts/menu.js'></script>
 		
 		<style>
 			body {
@@ -26,6 +27,96 @@
 				
 				margin: auto;
 			}
+
+			#menu-button
+			{
+				position: fixed;
+				background-image: url(./img/menu-button-new.png);
+				height: 60px;
+				width: 60px;
+				background-size: 100% auto;
+				cursor: pointer;
+				top: 15px;
+				right: 1%;
+
+			}
+			#menu-button:hover
+			{
+				transform: scale(1.07);
+			}
+
+			#game-menu
+			{
+				display: none;
+				width: 100%
+				height: 100%;
+				color: red;
+				overflow: auto;
+				bottom: -51%;
+				right: -36%;
+
+
+			}
+
+			#HTP
+			{
+				position: fixed;
+				background-image: url(./img/how-to-play-button.png);
+				background-size: 100% auto;
+				background-repeat: no-repeat;
+				cursor: pointer;
+				height: 84px;
+				width: 288.96px;
+				right: 44%;
+				bottom: 68%;
+
+			}
+
+			#HTP:hover
+			{
+				transform: scale(1.03);
+				background-image: url(./img/how-to-play-button-hover.png);
+			}
+
+			#Cred
+			{
+				position: fixed;
+				background-image: url(./img/credits-button.png);
+				background-size: 100% auto;
+				background-repeat: no-repeat;
+				cursor: pointer;
+				height: 84px;
+				width: 288.96px;
+				right: 44%;
+				bottom: 57%;
+
+			}
+
+			#Cred:hover
+			{
+				transform: scale(1.03);
+				background-image: url(./img/credits-button-hover.png);
+			}
+
+			#RS
+			{
+				position: fixed;
+				background-image: url(./img/restart-game-button.png);
+				background-size: 100% auto;
+				background-repeat: no-repeat;
+				cursor: pointer;
+				height: 84px;
+				width: 288.96px;
+				right: 44%;
+				bottom: 46%;
+
+			}
+
+			#RS:hover
+			{
+				transform: scale(1.03);
+				background-image: url(./img/restart-game-button-hover.png);
+			}
 			
 		</style>
 	</head>
@@ -33,6 +124,7 @@
 	
 	
 	<body onload='start();'>
+
 
 		<div id='canvas'></div>
 <div id="VolumeCtrl">
@@ -76,6 +168,16 @@
     }
 </script>
 
+
+
+		<div id='canvas'>
+			<div id="menu-button" onclick="showMenu();"></div>
+			<div id="game-menu">
+				<div id="HTP"></div>
+				<div id="Cred"></div>
+				<div id= "RS" onclick='window.location.reload()'></div>
+			</div>
+		</div>
 
 		<script src='./Scripts/three.js'></script>
 		<script src='./Scripts/threex.rendererstats.js'></script>
