@@ -7,7 +7,7 @@ var fps = 60;
 var A_speed = 4;
 
 // De viktiga variablerna för kamera osv
-var camera, scene, renderer,rendererStats, canvas;
+var camera,temp_camera, scene, renderer,rendererStats, canvas;
 var n = 0;
 //Tar in storleken av fönstret
 var windowHalfX = window.innerWidth ;
@@ -15,13 +15,13 @@ var windowHalfY = window.innerHeight ;
 
 //Lista med url till modeller
 var Mandeln_url = "./Models/Mandel/animationRotated.JD";
-//var model_url = ["./Models/Levels/Level2/golv1.jd","./Models/Levels/Level2/lada1.jd","./Models/Levels/Level2/vagg1.jd","./Models/Levels/Level2/vagg2.jd","./Models/Levels/Level2/vagg3.jd","./Models/Levels/Level2/vagg4.jd"];
-var model_url = ["./Models/Levels/Level_1/doorh.jd","./Models/Levels/Level_1/doorv.jd","./Models/Levels/Level_1/barrel1.jd","./Models/Levels/Level_1/barrel2.jd","./Models/Levels/Level_1/barrel3.jd","./Models/Levels/Level_1/barrel4.jd","./Models/Levels/Level_1/barrel5.jd"
+
+var model_url = ["./Models/Levels/Level_1/doorh.jd","./Models/Levels/Level_1/doorv.jd","./Models/Levels/Level_1/pipe.jd","./Models/Levels/Level_1/barrel1.jd","./Models/Levels/Level_1/barrel2.jd","./Models/Levels/Level_1/barrel3.jd","./Models/Levels/Level_1/barrel4.jd","./Models/Levels/Level_1/barrel5.jd"
 ,"./Models/Levels/Level_1/fencewall1.jd","./Models/Levels/Level_1/fencewall2.jd","./Models/Levels/Level_1/floor.jd","./Models/Levels/Level_1/kortsida1.jd","./Models/Levels/Level_1/kortsida2.jd","./Models/Levels/Level_1/lada1.jd","./Models/Levels/Level_1/lada2.jd"
 ,"./Models/Levels/Level_1/lada3.jd","./Models/Levels/Level_1/lada4.jd","./Models/Levels/Level_1/lada5.jd","./Models/Levels/Level_1/lada6.jd","./Models/Levels/Level_1/lada7.jd","./Models/Levels/Level_1/lada8.jd"
-,"./Models/Levels/Level_1/lastpall.jd","./Models/Levels/Level_1/lastpall2.jd","./Models/Levels/Level_1/lastpall3.jd","./Models/Levels/Level_1/lastpall4.jd","./Models/Levels/Level_1/longsida1.jd","./Models/Levels/Level_1/longsida2.jd","./Models/Levels/Level_1/pipe.jd"
+,"./Models/Levels/Level_1/lastpall.jd","./Models/Levels/Level_1/lastpall2.jd","./Models/Levels/Level_1/lastpall3.jd","./Models/Levels/Level_1/lastpall4.jd","./Models/Levels/Level_1/longsida1.jd","./Models/Levels/Level_1/longsida2.jd"
 ,"./Models/Levels/Level_1/platta.jd","./Models/Levels/Level_1/fencewall3.jd","./Models/Levels/Level_1/fencewall4.jd","./Models/Levels/Level_1/fencewall6.jd"];
-var objectiv_url = "./Models/Levels/Level_1/key.jd";
+var objectiv_url = "./Models/Levels/Level_1/keyrotated.jd";
 var Exit_url = "./Models/Levels/Level_1/Exit.jd";
 
 //Object som skapas
@@ -29,6 +29,8 @@ var Mandeln;
 var models = [model_url.length];
 var Exit;
 
+//Ljussättning
+var ljus;
 
 //Kollisions variablerna
 var boxobject = [model_url.length];
@@ -51,9 +53,13 @@ var collidableMeshList = [model_url.lenght];
 //Klass som handskar tangenbordstryck
 var keyboard= new THREEx.KeyboardState();
 
+
+
 var can_jump = true;
 var in_air = false;
 var grav = -0.5;
+//counter
+var j = 0;
 
 var golv_collision;
 
@@ -63,8 +69,8 @@ var speedZ = 0;
 
 var veloY = 0;
 
-//Flyttar box
-var hiss = false;
+//Om nyckel är tagen
+var key_taken = false;
 
 //Räknar frames som gubben står stilla
 var landing_count = 0;
@@ -75,10 +81,24 @@ var meshes = [];
 var mixers = [];
 var clock = new THREE.Clock; 
 var loader = new THREE.JDLoader();
-var delta;
 var material;
 
+// Raycaster
+var raycaster = new THREE.Raycaster();
 
+//ljuddeklaration
+var silence = false;
+	snd = new Audio("./Audio/song.mp3"); 
+	jump = new Audio("./Audio/Jump1.mp3");
+	walk = new Audio("./Audio/walk.mp3");
+	ugh = new Audio("./Audio/ugh.mp3");
+	tGround = new Audio("./Audio/TouchGround.mp3");
+	foundKey = new Audio("./Audio/YeyFoundIt.mp3")
+	engelbrekt = new Audio("./Audio/DrEngel.mp3")
+	findKey = new Audio("./Audio/FindKey.mp3")
+
+	//Ljudarray
+	var SFXvol_controll = [jump, walk, ugh, tGround, foundKey, engelbrekt, findKey];
 ////*****************////
 //// Tansformationer ////
 ////*****************////
@@ -92,9 +112,59 @@ kamera_initial_pos.rotation.y = -Math.PI;
 kamera_initial_pos.rotation.x = Math.PI/8;
 kamera_initial_pos.translateZ(-1)
 
+var mouse = new THREE.Vector2(0,0);
 ////*****************////
 ////   Funktioner!!! ////
 ////*****************////
+
+
+//ljudfunktioner
+	
+	//Skapa bakgrundsmusik
+	snd.addEventListener('ended', function() {
+    this.currentTime = 0;
+    this.play();
+	}, false);
+	setTimeout( play_func, 1500 );
+		function play_func(){
+		snd.play();
+		}
+	
+	
+	//ljudeffekter
+	window.addEventListener("keydown", checkKeyPressed, false);
+	
+	function checkKeyPressed(e) {
+    	if (e.keyCode == "90") {
+    		togglePlay();
+    		
+    		//använd knapp med <a onClick="togglePlay()">Click here to hear.</a>
+		}
+		if (e.keyCode == "88") {
+					if(silence == true){
+						silence = false;
+					}else{	
+						silence = true;
+					} 			
+    		//använd knapp med <a onClick="togglePlay()">Click here to hear.</a>
+		}	
+	}
+
+	//pause backgroundmusic
+	function togglePlay() {
+        		
+  			return snd.paused ? snd.play() : snd.pause();
+
+	};  
+
+	function muteSFX(){
+		
+		if(silence == true){
+				silence = false;
+			}else{	
+				silence = true;
+			}
+	}   
 
 //Funktion som startar allt, kallas från html filen
 function start()
@@ -117,7 +187,11 @@ function createscene()
 	//Skapar scenen
 	scene = new THREE.Scene();
 	
-	//Här skapar jag scengrafen
+	/*******************************************
+	********     Ljussättning    ***************
+	*******************************************/
+	
+	
 	var ambient = new THREE.AmbientLight( 0x444444 );
 	scene.add( ambient );
 	
@@ -126,7 +200,6 @@ function createscene()
 	directionalLight.position.set(0 , 100, 0 ).normalize();
 	scene.add( directionalLight );
 	
-
 	
 	/*******************************************
 	*************Laddar modellerna**************
@@ -221,6 +294,21 @@ function create_collisionBox()
 //renderingsloop
 function draw()
 {
+	setTimeout(function(){ 
+	
+					if(j == 0){
+						SFXvol_controll[6].play();
+				     j = 1;   
+					}
+				    }, 1500); 
+	
+					
+	setTimeout(function(){ 
+			if(j == 1){
+						SFXvol_controll[5].play();
+				     j = 2;   
+			}
+				    }, 20000);
 	// Loopar över draw functionen och sänker fps'n till 60fps
 	setTimeout(function() {
 	// draw THREE.JS scene
@@ -253,12 +341,43 @@ function draw()
 	
     gravity(boxiObjGround, boxiObjTop);
 	movement();
+	
 	if(Mandeln_crash.intersectsBox(objectiv_crash)){
 		objectiv.object.visible= false;
-		hiss = true;
+		key_taken = true;
+		if(silence == false){
+			SFXvol_controll[4].play();
+			}
 	}
 	
-	if(hiss){
+	/*temp_camera = camera;
+	temp_camera.position.z= 800;
+	raycaster.setFromCamera(mouse,camera );
+	var array =raycaster.intersectObject(scene, true);
+	
+	if(array.length >1){
+		camera.position.z = camera.position.z-array[0].distance-20;
+	}else{
+		raycaster.setFromCamera(mouse,temp_camera );
+		var array =raycaster.intersectObject(scene, true);
+		if(array.length == 1){
+			camera.position.z = 800;
+		}
+	}
+	/*else{
+		camera.position.z = 800;
+	}*/
+	//camera.position.z -= 10;
+	
+	/*raycaster.setFromCamera(mouse,camera );
+	var array =raycaster.intersectObject(scene, true);
+	
+	if(array.length >1){
+		camera.rotation.x -= 0.2
+	}*/
+	
+	
+	if(key_taken){
 		
 		if(models[0].object.position.x>-200){
 			models[0].object.position.x -= 2;
@@ -269,7 +388,6 @@ function draw()
 		Exit.object.visible = true;
 		
 		Exit_crash = new THREE.Box3().setFromObject(Exit.object);
-		console.log(Mandeln.object.position.z)
 		if(boxiObjBack.intersectsBox(Exit_crash)){
 			document.location.href = "file:///H:/TNM061/Projekt%200.9/TNM061.project/index.html" ;
 			stop = false;
@@ -279,17 +397,21 @@ function draw()
 		document.location.href = "file:///H:/TNM061/Projekt%200.9/TNM061.project/index.html" ;
 		stop = false;
 	}
-    console.log(golv_collision);
 	if(stop)  	
 		requestAnimationFrame(draw);
 	
-	console.log("x: " +Mandeln.object.position.x)
-	console.log("y: " +Mandeln.object.position.y)
-	console.log("z: " +Mandeln.object.position.z)
+	//console.log("x: " +Mandeln.object.position.x)
+	//console.log("y: " +Mandeln.object.position.y)
+	//console.log("z: " +Mandeln.object.position.z)
     }, 1000 / fps);
 
 
+
 }
+
+
+
+
 function gravity(){
 	var bool = Collision(boxiObjGround);
 	golv_collision = Collision(boxiObjGround);
@@ -368,7 +490,7 @@ function render_checkbox()
 function movement(){
 
 	
-	var moveDistance = 18;//200 * delta; // 200 pixels per second
+	var moveDistance = 20;//200 * delta; // 200 pixels per second
 	var rotateAngle = Math.PI/50; //Math.PI / 2 * delta;   // pi/2 radians (90 degrees) per second
 
 	if(keyboard.pressed("left"))
@@ -384,6 +506,7 @@ function movement(){
 		if(Collision(boxiObjFront))
 		{	
 			Mandeln.object.translateZ( -moveDistance );
+			
 		}
 
 	}
@@ -400,6 +523,10 @@ function movement(){
 		if(Collision(boxiObjLeft))
 		{
 			Mandeln.object.translateX( moveDistance );
+			if(silence == false)
+			{
+				SFXvol_controll[1].play();
+			}
 		}
 	}
 
@@ -408,13 +535,21 @@ function movement(){
 		if(Collision(boxiObjRight))
 		{
 			Mandeln.object.translateX( -moveDistance );
+			if(silence == false)
+			{
+				SFXvol_controll[1].play();
+			}
 		}
 	}
 
 	if(keyboard.pressed("space"))
     {	
     	if(!(in_air)){
-    		speedY = 24; //5
+    		speedY = 25; //5
+			if(silence == false)
+			{
+				SFXvol_controll[0].play();
+			}
     	}
 	}
 }
@@ -446,7 +581,6 @@ modell_loader = function(object)
 			{
 				if (mesh.geometry.animations)
                   {
-					  
                      var mixer = new THREE.AnimationMixer(mesh);
                      object.mixers[0]= mixer;
                      mixer.clipAction(mesh.geometry.animations[0]).play();
@@ -494,6 +628,7 @@ animation_chooser = function(){
 			//Uppdaterar mixern
 			Mandeln.mixers[0].update(Mandeln.meshes[0].geometry.animations[0].duration/8);	
 			hopp_count+=Mandeln.meshes[0].geometry.animations[0].duration/8;
+			
 		
 		}else if(golv_collision){
 			//Startar nästa mixer
@@ -508,12 +643,21 @@ animation_chooser = function(){
 			Mandeln.mixers[0].clipAction(Mandeln.meshes[0].geometry.animations[0]).stop();
 			hopp_count = 0;
 			landing_count =0;
+			if(silence == false){
+				
+				SFXvol_controll[3].play();
+				SFXvol_controll[2].play();
+			}
 		}
 	//Kollar om mandeln rör sig
 	}else if((keyboard.pressed("up") || keyboard.pressed("down")) ){
 		// Öppnar  nya mixers
 		Mandeln.mixers[5].clipAction(Mandeln.meshes[0].geometry.animations[5]).play();
 		Mandeln.mixers[5].update(Mandeln.meshes[0].geometry.animations[5].duration/10);
+		if(silence == false)
+			{
+				SFXvol_controll[1].play();
+			}
 		
 	}else{
 		//Kör stilla animationen
@@ -521,12 +665,15 @@ animation_chooser = function(){
 		for (var i = 0; i < Mandeln.mixers.length; ++i){
 			Mandeln.mixers[3].update(Mandeln.meshes[0].geometry.animations[3].duration/80 *fuck_javascript);
 			fuck_javascript = 0;
+			
 		}
 		//Stänger av gång animationen
 		for (var i = 0; i < Mandeln.mixers.length-5; ++i){
 			Mandeln.mixers[5].clipAction(Mandeln.meshes[0].geometry.animations[5]).stop();
 		}
 	}
+	for (var i = 0; i < objectiv.mixers.length; ++i)
+		objectiv.mixers[0].update(objectiv.meshes[0].geometry.animations[0].duration/200);	
 }
 
 

@@ -7,7 +7,8 @@
 		<link rel="icon" href="img/mandeln.png">
 	<link rel="stylesheet" href="css/style.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
@@ -28,8 +29,54 @@
 			
 		</style>
 	</head>
+
+	
+	
 	<body onload='start();'>
+
 		<div id='canvas'></div>
+<div id="VolumeCtrl">
+	<!--Musik-->
+	<div id="slider">
+		<input id="vol-control" class="bar" type="range" value="100" oninput="SetVolume(this.value)" onchange="SetVolume(this.value)"></input>
+		<span class="glyphicon glyphicon-volume-off" id="mute" onclick="togglePlay();"></span>
+		<span class="highlight"></span>
+		<output id="rangevalue"><div id="chosen">100%</div></output>
+		<div id="infoVol">Sound Volume</div>
+	</div>
+	<!--Ljudeffekter-->
+	<div id="slider">
+		<input id="vol-control" class="bar" type="range" value="100" oninput="SetVolume2(this.value)" onchange="SetVolume2(this.value)"></input>
+		<span class="glyphicon glyphicon-volume-off" id="mute" onclick="muteSFX();"></span>
+		<span class="highlight"></span>
+		<output id="rangevalue"><div id="chosen2">100%</div></output>
+		<div id="infoVol">Sound Effects Volume</div>
+	</div>
+</div>
+
+<script>
+	//Volume Trackers
+	
+	function SetVolume(val)
+    {
+        snd.volume = val / 100;
+	       	var value = document.getElementById("chosen");
+			value.innerHTML = val + "%";
+    }
+
+    function SetVolume2(val2)
+    {
+        jump.volume = val2 / 100;
+        walk.volume = val2 / 100;
+        ugh.volume = val2 / 100;  
+        tGround.volume = val2 / 100;  
+		
+			var value2 = document.getElementById("chosen2");
+			value2.innerHTML = val2 + "%";		
+    }
+</script>
+
+
 		<script src='./Scripts/three.js'></script>
 		<script src='./Scripts/threex.rendererstats.js'></script>
 		<script src='./Scripts/threex.keyboardstate.js'></script>
@@ -38,6 +85,7 @@
 		<script src="./Scripts/Mandeln_Loader.js"></script>
 		<script src="./Scripts/Detector.js"></script>
 		<script src='./Scripts/main.js'></script>
+		<!--<script src="./Scripts/audio.js"></script>-->
 
 	</body>
 </html>
