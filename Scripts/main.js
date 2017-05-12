@@ -14,18 +14,18 @@ var windowHalfX = window.innerWidth ;
 var windowHalfY = window.innerHeight ;
 
 //Lista med url till modeller
-var player_url = "./Models/Mandel/animationRotated.JD";
+var Mandeln_url = "./Models/Mandel/animationRotated.JD";
 //var model_url = ["./Models/Levels/Level2/golv1.jd","./Models/Levels/Level2/lada1.jd","./Models/Levels/Level2/vagg1.jd","./Models/Levels/Level2/vagg2.jd","./Models/Levels/Level2/vagg3.jd","./Models/Levels/Level2/vagg4.jd"];
 var model_url = ["./Models/Levels/Level_1/doorh.jd","./Models/Levels/Level_1/doorv.jd","./Models/Levels/Level_1/barrel1.jd","./Models/Levels/Level_1/barrel2.jd","./Models/Levels/Level_1/barrel3.jd","./Models/Levels/Level_1/barrel4.jd","./Models/Levels/Level_1/barrel5.jd"
 ,"./Models/Levels/Level_1/fencewall1.jd","./Models/Levels/Level_1/fencewall2.jd","./Models/Levels/Level_1/floor.jd","./Models/Levels/Level_1/kortsida1.jd","./Models/Levels/Level_1/kortsida2.jd","./Models/Levels/Level_1/lada1.jd","./Models/Levels/Level_1/lada2.jd"
 ,"./Models/Levels/Level_1/lada3.jd","./Models/Levels/Level_1/lada4.jd","./Models/Levels/Level_1/lada5.jd","./Models/Levels/Level_1/lada6.jd","./Models/Levels/Level_1/lada7.jd","./Models/Levels/Level_1/lada8.jd"
 ,"./Models/Levels/Level_1/lastpall.jd","./Models/Levels/Level_1/lastpall2.jd","./Models/Levels/Level_1/lastpall3.jd","./Models/Levels/Level_1/lastpall4.jd","./Models/Levels/Level_1/longsida1.jd","./Models/Levels/Level_1/longsida2.jd","./Models/Levels/Level_1/pipe.jd"
-,"./Models/Levels/Level_1/platta.jd","./Models/Levels/Level_1/fencewall3.jd","./Models/Levels/Level_1/fencewall4.jd","./Models/Levels/Level_1/fencewall5.jd","./Models/Levels/Level_1/fencewall6.jd"];
+,"./Models/Levels/Level_1/platta.jd","./Models/Levels/Level_1/fencewall3.jd","./Models/Levels/Level_1/fencewall4.jd","./Models/Levels/Level_1/fencewall6.jd"];
 var objectiv_url = "./Models/Levels/Level_1/key.jd";
 var Exit_url = "./Models/Levels/Level_1/Exit.jd";
 
 //Object som skapas
-var player;
+var Mandeln;
 var models = [model_url.length];
 var Exit;
 
@@ -55,7 +55,7 @@ var can_jump = true;
 var in_air = false;
 var grav = -0.5;
 
-
+var golv_collision;
 
 var speedX = 0;
 var speedY = 0;
@@ -67,7 +67,7 @@ var veloY = 0;
 var hiss = false;
 
 //Räknar frames som gubben står stilla
-var still_count = 0;
+var landing_count = 0;
 var hopp_count = 0;
 
 //Variable for modell
@@ -125,6 +125,7 @@ function createscene()
 	var directionalLight = new THREE.DirectionalLight( 0xffeedd );
 	directionalLight.position.set(0 , 100, 0 ).normalize();
 	scene.add( directionalLight );
+	
 
 	
 	/*******************************************
@@ -142,11 +143,11 @@ function createscene()
 	scene.add(objectiv.object);
 	
 	//Laddar spelaren
-	player = new Mloader(player_url,true)
-	modell_loader(player);
-	scene.add(player.object);
-	player.object.translateY(100);	
-	player.object.add(kamera_initial_pos);
+	Mandeln = new Mloader(Mandeln_url,true)
+	modell_loader(Mandeln);
+	scene.add(Mandeln.object);
+	Mandeln.object.translateY(10);	
+	Mandeln.object.add(kamera_initial_pos);
 	kamera_initial_pos.add(camera);
 	
 	//laddar exit
@@ -156,22 +157,22 @@ function createscene()
 	Exit.object.visible = false;
 	
 	create_collisionBox()
-	player.object.add(boxiF);
+	Mandeln.object.add(boxiF);
 	boxiF.translateZ(-40).translateY(50).translateX(5);
 	//box bak
-	player.object.add(boxiB);
+	Mandeln.object.add(boxiB);
 	boxiB.translateZ(55).translateY(50).translateX(5);
 	//box Right
-	player.object.add(boxiL);
+	Mandeln.object.add(boxiL);
 	boxiL.translateZ(5).translateY(50).translateX(40);
 	//Box LEft
-	player.object.add(boxiR);
+	Mandeln.object.add(boxiR);
 	boxiR.translateZ(5).translateY(50).translateX(-30);
 	//Box ground
-	player.object.add(boxiG);
+	Mandeln.object.add(boxiG);
 	boxiG.translateZ(5).translateY(-2).translateX(10);
 	//box top
-	player.object.add(boxiT);
+	Mandeln.object.add(boxiT);
 	boxiT.translateZ(15).translateY(100).translateX(10);
 	
 	boxiL.visible = false;
@@ -234,7 +235,7 @@ function draw()
 		boxobject[i] = new THREE.Box3().setFromObject(models[i].object);
 	}
 	objectiv_crash = new THREE.Box3().setFromObject(objectiv.object);
-	var player_crash = new THREE.Box3().setFromObject(player.object);
+	var Mandeln_crash = new THREE.Box3().setFromObject(Mandeln.object);
 	
 	boxiObjFront = new THREE.Box3().setFromObject(boxiF);
 	boxiObjBack = new THREE.Box3().setFromObject(boxiB);
@@ -244,15 +245,15 @@ function draw()
 	boxiObjTop = new THREE.Box3().setFromObject(boxiT);
 
 	//myFunc(boxobject);
-	cBollJump = player.object.clone();
-	cBollJump2 = player.object.clone();
-	cBoll = player.object.clone();
-	cBoll2 = player.object.clone();
-	cBoll3 = player.object.clone();
+	cBollJump = Mandeln.object.clone();
+	cBollJump2 = Mandeln.object.clone();
+	cBoll = Mandeln.object.clone();
+	cBoll2 = Mandeln.object.clone();
+	cBoll3 = Mandeln.object.clone();
 	
     gravity(boxiObjGround, boxiObjTop);
 	movement();
-	if(player_crash.intersectsBox(objectiv_crash)){
+	if(Mandeln_crash.intersectsBox(objectiv_crash)){
 		objectiv.object.visible= false;
 		hiss = true;
 	}
@@ -268,7 +269,7 @@ function draw()
 		Exit.object.visible = true;
 		
 		Exit_crash = new THREE.Box3().setFromObject(Exit.object);
-		console.log(player.object.position.z)
+		console.log(Mandeln.object.position.z)
 		if(boxiObjBack.intersectsBox(Exit_crash)){
 			document.location.href = "file:///H:/TNM061/Projekt%200.9/TNM061.project/index.html" ;
 			stop = false;
@@ -278,19 +279,20 @@ function draw()
 		document.location.href = "file:///H:/TNM061/Projekt%200.9/TNM061.project/index.html" ;
 		stop = false;
 	}
-    if(stop)  	
+    console.log(golv_collision);
+	if(stop)  	
 		requestAnimationFrame(draw);
 	
-	/*console.log("x: " +player.object.position.x)
-	console.log("y: " +player.object.position.y)
-	console.log("z: " +player.object.position.z)*/
+	console.log("x: " +Mandeln.object.position.x)
+	console.log("y: " +Mandeln.object.position.y)
+	console.log("z: " +Mandeln.object.position.z)
     }, 1000 / fps);
 
 
 }
 function gravity(){
 	var bool = Collision(boxiObjGround);
-
+	golv_collision = Collision(boxiObjGround);
 	if(bool)
 	{
 		in_air = true;
@@ -324,7 +326,7 @@ function gravity(){
 		speed = -15;
 	}
 
-	player.object.position.y += speed;
+	Mandeln.object.position.y += speed;
 	
 
 
@@ -365,23 +367,23 @@ function render_checkbox()
 
 function movement(){
 
-	//var delta = clock.getDelta(); // seconds.
+	
 	var moveDistance = 18;//200 * delta; // 200 pixels per second
 	var rotateAngle = Math.PI/50; //Math.PI / 2 * delta;   // pi/2 radians (90 degrees) per second
 
 	if(keyboard.pressed("left"))
     {	
-		player.object.rotateOnAxis( new THREE.Vector3(0,1,0), rotateAngle);
+		Mandeln.object.rotateOnAxis( new THREE.Vector3(0,1,0), rotateAngle);
 	}
 	if(keyboard.pressed("right"))
     {	
-		player.object.rotateOnAxis( new THREE.Vector3(0,1,0), -rotateAngle);
+		Mandeln.object.rotateOnAxis( new THREE.Vector3(0,1,0), -rotateAngle);
 	}
 	if(keyboard.pressed("down"))
     {	
 		if(Collision(boxiObjFront))
 		{	
-			player.object.translateZ( -moveDistance );
+			Mandeln.object.translateZ( -moveDistance );
 		}
 
 	}
@@ -390,14 +392,14 @@ function movement(){
     {	
 		if(Collision(boxiObjBack))
 		{
-			player.object.translateZ( moveDistance );
+			Mandeln.object.translateZ( moveDistance );
 		}	
 	}
 	if(keyboard.pressed("ERigth"))
     {		
 		if(Collision(boxiObjLeft))
 		{
-			player.object.translateX( moveDistance );
+			Mandeln.object.translateX( moveDistance );
 		}
 	}
 
@@ -405,7 +407,7 @@ function movement(){
     {	
 		if(Collision(boxiObjRight))
 		{
-			player.object.translateX( -moveDistance );
+			Mandeln.object.translateX( -moveDistance );
 		}
 	}
 
@@ -455,7 +457,7 @@ modell_loader = function(object)
 					 
 					 var mixer2 = new THREE.AnimationMixer(mesh);
                      object.mixers[2]= mixer2;
-                     mixer2.clipAction(mesh.geometry.animations[2]).play();
+                     //mixer2.clipAction(mesh.geometry.animations[2]).play();
 					 
 					 var mixer3 = new THREE.AnimationMixer(mesh);
                      object.mixers[3]= mixer3;
@@ -481,71 +483,50 @@ modell_loader = function(object)
 
 
 animation_chooser = function(){
-	var fuck_javascript = 1;
+	// If sats som kollar vilken knapp som är tryckt och därefter startar och stänger av animationer därefter
+	// Hoppanimationen ligger först då den ska gå över alla andra animationer
 	if(keyboard.pressed("space") || hopp_count !=0){
-		player.mixers[0].clipAction(player.meshes[0].geometry.animations[0]).play();
 		
+		//Ser om det är dags att byta till nästa hopp animation, den långa variabeln är hur lång animationen är i sek
+		if(hopp_count<Mandeln.meshes[0].geometry.animations[0].duration){
+			//Startar hopp animation 1/3
+			Mandeln.mixers[0].clipAction(Mandeln.meshes[0].geometry.animations[0]).play();
+			//Uppdaterar mixern
+			Mandeln.mixers[0].update(Mandeln.meshes[0].geometry.animations[0].duration/8);	
+			hopp_count+=Mandeln.meshes[0].geometry.animations[0].duration/8;
 		
-		if(hopp_count<=player.meshes[0].geometry.animations[0].duration/2){
-			for (var i = 0; i < player.mixers.length; ++i){
-				player.mixers[0].update(1/fps*fuck_javascript*A_speed*2);	
-				fuck_javascript = 0;
-			}
-			hopp_count+=1/fps*A_speed;
-		}else if(hopp_count<=player.meshes[0].geometry.animations[0].duration+player.meshes[0].geometry.animations[1].duration){
-			for (var i = 0; i < player.mixers.length; ++i)
-				player.mixers[0].clipAction(player.meshes[0].geometry.animations[0]).stop();
+		}else if(golv_collision){
+			//Startar nästa mixer
+			Mandeln.mixers[1].clipAction(Mandeln.meshes[0].geometry.animations[1]).play();
+			//Uppdaterar nästa mixer
+			Mandeln.mixers[1].update(Mandeln.meshes[0].geometry.animations[1].duration/10);	
 			
-			player.mixers[1].clipAction(player.meshes[0].geometry.animations[1]).play();
-			for (var i = 0; i < player.mixers.length; ++i){
-				player.mixers[1].update(1/fps*fuck_javascript*A_speed);	
-				fuck_javascript = 0;
-			}
-			hopp_count+=1/fps*A_speed;
-			
-			
-		}else if(hopp_count<=player.meshes[0].geometry.animations[0].duration + player.meshes[0].geometry.animations[1].duration + player.meshes[0].geometry.animations[0].duration){
-				for (var i = 0; i < player.mixers.length; ++i){
-					player.mixers[1].clipAction(player.meshes[0].geometry.animations[1]).stop();
-					player.mixers[0].clipAction(player.meshes[0].geometry.animations[0]).stop();
-				}
-				
-				player.mixers[2].clipAction(player.meshes[0].geometry.animations[2]).play();
-				for (var i = 0; i < player.mixers.length; ++i){
-					player.mixers[2].update(1/fps*fuck_javascript*A_speed);	
-					fuck_javascript = 0;
-				}
-				hopp_count+=1/fps*A_speed;
 		}else{
-			for (var i = 0; i < player.mixers.length; ++i)
-					player.mixers[2].clipAction(player.meshes[0].geometry.animations[2]).stop();
+			//Stänger av alla mixers och nollställer variablerna
+			Mandeln.mixers[2].clipAction(Mandeln.meshes[0].geometry.animations[2]).stop();
+			Mandeln.mixers[1].clipAction(Mandeln.meshes[0].geometry.animations[1]).stop();
+			Mandeln.mixers[0].clipAction(Mandeln.meshes[0].geometry.animations[0]).stop();
 			hopp_count = 0;
+			landing_count =0;
 		}
+	//Kollar om mandeln rör sig
 	}else if((keyboard.pressed("up") || keyboard.pressed("down")) ){
-		player.mixers[5].clipAction(player.meshes[0].geometry.animations[5]).play();
-		if((keyboard.pressed("up") || keyboard.pressed("down")) ){
-			for(var i = 0; i < player.mixers.length; ++i){
-				player.mixers[5].update(1/fps*A_speed*fuck_javascript);
-				fuck_javascript = 0;
-			}
-			still_count += 1/fps*A_speed;
-		}
+		// Öppnar  nya mixers
+		Mandeln.mixers[5].clipAction(Mandeln.meshes[0].geometry.animations[5]).play();
+		Mandeln.mixers[5].update(Mandeln.meshes[0].geometry.animations[5].duration/10);
+		
 	}else{
+		//Kör stilla animationen
 		var fuck_javascript = 1;
-		for (var i = 0; i < player.mixers.length; ++i){
-			player.mixers[3].update(1/fps*fuck_javascript*A_speed);
+		for (var i = 0; i < Mandeln.mixers.length; ++i){
+			Mandeln.mixers[3].update(Mandeln.meshes[0].geometry.animations[3].duration/80 *fuck_javascript);
 			fuck_javascript = 0;
 		}
-		for (var i = 0; i < player.mixers.length; ++i){
-			player.mixers[5].clipAction(player.meshes[0].geometry.animations[5]).stop();
-			player.mixers[2].clipAction(player.meshes[0].geometry.animations[2]).stop();
-			player.mixers[1].clipAction(player.meshes[0].geometry.animations[1]).stop();
-			player.mixers[0].clipAction(player.meshes[0].geometry.animations[0]).stop();
+		//Stänger av gång animationen
+		for (var i = 0; i < Mandeln.mixers.length-5; ++i){
+			Mandeln.mixers[5].clipAction(Mandeln.meshes[0].geometry.animations[5]).stop();
 		}
 	}
-	
-
-	//console.log(hopp_count); 
 }
 
 
