@@ -110,9 +110,26 @@ var kamera_initial_pos = new THREE.Group();
 //Vrider kameran så att man ser snett uppifrån
 kamera_initial_pos.rotation.y = -Math.PI;
 kamera_initial_pos.rotation.x = Math.PI/8;
-kamera_initial_pos.translateZ(-1)
+//kamera_initial_pos.translateZ(-1)
 
-var mouse = new THREE.Vector2(0,0);
+var mouse = new THREE.Vector2(0,0.2);
+var raycaster = new THREE.Raycaster();
+
+function Raytracer3V()
+{
+    this.origin =new THREE.Vector3(0,0,0);
+    this.destination = new THREE.Vector3(0,0,0);
+	this.startdot = new THREE.Vector3(0,0,0);
+	this.param = new THREE.Vector3(0,0,0);
+	
+}
+Raytracer3V.prototype.setRaytracer = function(org, dest){
+	this.origin = org;
+	this.destination = dest;
+	this.stardot = this.origin;
+	this.param = this.destination-this.origin;
+}
+
 ////*****************////
 ////   Funktioner!!! ////
 ////*****************////
@@ -165,6 +182,18 @@ var mouse = new THREE.Vector2(0,0);
 				silence = true;
 			}
 	}   
+
+
+
+function onMouseMove( event ) {
+
+	// calculate mouse position in normalized device coordinates
+	// (-1 to +1) for both components
+
+	mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+}
 
 //Funktion som startar allt, kallas från html filen
 function start()
@@ -219,7 +248,7 @@ function createscene()
 	Mandeln = new Mloader(Mandeln_url,true)
 	modell_loader(Mandeln);
 	scene.add(Mandeln.object);
-	Mandeln.object.translateY(10);	
+	Mandeln.object.position.y=10;	
 	Mandeln.object.add(kamera_initial_pos);
 	kamera_initial_pos.add(camera);
 	
@@ -266,7 +295,7 @@ function createscene()
 	canvas.appendChild(renderer.domElement);
 
 	render_checkbox();
-
+	
 }
 function create_collisionBox()
 {
@@ -349,33 +378,26 @@ function draw()
 			SFXvol_controll[4].play();
 			}
 	}
-	
-	/*temp_camera = camera;
-	temp_camera.position.z= 800;
-	raycaster.setFromCamera(mouse,camera );
-	var array =raycaster.intersectObject(scene, true);
-	
-	if(array.length >1){
-		camera.position.z = camera.position.z-array[0].distance-20;
-	}else{
-		raycaster.setFromCamera(mouse,temp_camera );
-		var array =raycaster.intersectObject(scene, true);
-		if(array.length == 1){
-			camera.position.z = 800;
-		}
-	}
-	/*else{
-		camera.position.z = 800;
-	}*/
-	//camera.position.z -= 10;
+	//camera.position.z = 800;
+	//console.log("x: " + mouse.x + "  y: "+ mouse.y);
 	
 	/*raycaster.setFromCamera(mouse,camera );
 	var array =raycaster.intersectObject(scene, true);
-	
-	if(array.length >1){
-		camera.rotation.x -= 0.2
-	}*/
-	
+	//console.log("första: " +array.length);
+	if(array.length >2)
+	{
+		console.log(array.length )
+		if(camera.position.z>400){
+			camera.position.y += 2
+			camera.position.z -= 20;
+		}
+	}else{
+		if(camera.position.z<800){
+			camera.position.y -= 2
+			camera.position.z += 20;
+		}
+	}
+	*/
 	
 	if(key_taken){
 		
@@ -405,8 +427,12 @@ function draw()
 	//console.log("z: " +Mandeln.object.position.z)
     }, 1000 / fps);
 
+	//window.addEventListener( 'mousemove', onMouseMove, false );
 
-
+	var ray = new Raytracer3V();
+	//ray.setRaytracer(Mandeln.object.position, camera.position);
+	ray.param =camera.lookAt(ray.origin);
+	console.log(ray.param);
 }
 
 
@@ -482,10 +508,6 @@ function render_checkbox()
 	rendererStats.domElement.style.bottom	= '0px'
 	document.body.appendChild( rendererStats.domElement )
 }
-
-
-
-
 
 function movement(){
 
