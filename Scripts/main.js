@@ -15,7 +15,6 @@ var windowHalfY = window.innerHeight ;
 
 //Lista med url till modeller
 var player_url = "./Models/Mandel/animationRotated.JD";
-//var model_url = ["./Models/Levels/Level2/golv1.jd","./Models/Levels/Level2/lada1.jd","./Models/Levels/Level2/vagg1.jd","./Models/Levels/Level2/vagg2.jd","./Models/Levels/Level2/vagg3.jd","./Models/Levels/Level2/vagg4.jd"];
 var model_url = ["./Models/Levels/Level_1/doorh.jd","./Models/Levels/Level_1/doorv.jd","./Models/Levels/Level_1/barrel1.jd","./Models/Levels/Level_1/barrel2.jd","./Models/Levels/Level_1/barrel3.jd","./Models/Levels/Level_1/barrel4.jd","./Models/Levels/Level_1/barrel5.jd"
 ,"./Models/Levels/Level_1/fencewall1.jd","./Models/Levels/Level_1/fencewall2.jd","./Models/Levels/Level_1/floor.jd","./Models/Levels/Level_1/kortsida1.jd","./Models/Levels/Level_1/kortsida2.jd","./Models/Levels/Level_1/lada1.jd","./Models/Levels/Level_1/lada2.jd"
 ,"./Models/Levels/Level_1/lada3.jd","./Models/Levels/Level_1/lada4.jd","./Models/Levels/Level_1/lada5.jd","./Models/Levels/Level_1/lada6.jd","./Models/Levels/Level_1/lada7.jd","./Models/Levels/Level_1/lada8.jd"
@@ -90,7 +89,9 @@ var kamera_initial_pos = new THREE.Group();
 //Vrider kameran så att man ser snett uppifrån
 kamera_initial_pos.rotation.y = -Math.PI;
 kamera_initial_pos.rotation.x = Math.PI/8;
-kamera_initial_pos.translateZ(-1)
+kamera_initial_pos.translateZ(-1);
+
+
 
 ////*****************////
 ////   Funktioner!!! ////
@@ -117,14 +118,16 @@ function createscene()
 	//Skapar scenen
 	scene = new THREE.Scene();
 	
-	//Här skapar jag scengrafen
-	var ambient = new THREE.AmbientLight( 0x444444 );
+	//Här skapar jag ambient light
+	var ambient = new THREE.AmbientLight( 0x444444, 1 );
 	scene.add( ambient );
+
+
+
 	
-	
-	var directionalLight = new THREE.DirectionalLight( 0xffeedd );
+	/*var directionalLight = new THREE.DirectionalLight( 0xffeedd,0.1 );
 	directionalLight.position.set(0 , 100, 0 ).normalize();
-	scene.add( directionalLight );
+	scene.add( directionalLight );*/
 
 	
 	/*******************************************
@@ -140,6 +143,7 @@ function createscene()
 	objectiv = new Mloader(objectiv_url,false)
 	modell_loader(objectiv);
 	scene.add(objectiv.object);
+	
 	
 	//Laddar spelaren
 	player = new Mloader(player_url,true)
@@ -250,8 +254,12 @@ function draw()
 	cBoll2 = player.object.clone();
 	cBoll3 = player.object.clone();
 	
+	//rotera_nyckeln.rotation.y += 0.02;
+
     gravity(boxiObjGround, boxiObjTop);
 	movement();
+
+
 	if(player_crash.intersectsBox(objectiv_crash)){
 		objectiv.object.visible= false;
 		hiss = true;
@@ -286,6 +294,8 @@ function draw()
 	console.log("z: " +player.object.position.z)*/
     }, 1000 / fps);
 
+	console.log("x: " + player.object.position.x)
+	console.log("z: " + player.object.position.z)
 
 }
 function gravity(){
@@ -326,6 +336,7 @@ function gravity(){
 
 	player.object.position.y += speed;
 	
+
 
 
 	
