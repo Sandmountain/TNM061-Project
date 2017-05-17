@@ -25,10 +25,9 @@ animation_chooser = function(){
 			Mandeln.mixers[0].clipAction(Mandeln.meshes[0].geometry.animations[0]).stop();
 			hopp_count = 0;
 			landing_count =0;
-			if(silence == false){
-				
+			if(silence == false)
+			{
 				SFXvol_controll[3].play();
-				SFXvol_controll[2].play();
 			}
 		}
 	//Kollar om mandeln rör sig

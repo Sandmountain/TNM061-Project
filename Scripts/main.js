@@ -83,7 +83,6 @@ var floor_collision;
 
 
 
-
 ////*****************////
 //// Fysikvariabler	 ////
 ////*****************////
@@ -194,13 +193,36 @@ function createscene()
 	********     Ljussättning    ***************
 	*******************************************/
 	//ambient ljussättning
-	var ambient = new THREE.AmbientLight( 0x444444 );
+	var ambient = new THREE.AmbientLight( 0x444444, 0.2 );
 	scene.add( ambient );
 	
-	// Directional ljus
-	var directionalLight = new THREE.DirectionalLight( 0xffeedd,0.1 );
-	directionalLight.position.set(0 , 100, 0 ).normalize();
-	scene.add( directionalLight );
+
+	var RF = new THREE.PointLight( 0xffffff , 3, 2500 ,2 );
+	RF.position.set( 500, 1800, -1200 );
+	RF.castShadow = true;
+	
+	var RM = new THREE.PointLight( 0xffffff , 3, 2500 ,2 );
+	RM.position.set( 500, 1800, 0 );
+	scene.add( RM )
+	
+	var RB = new THREE.PointLight( 0xffffff , 3, 2500 ,2 );
+	RB.position.set( 500, 1800, 1200 );
+	scene.add( RB )
+	
+	
+	var LF = new THREE.PointLight( 0xffffff , 3, 2500 ,2 );
+	LF.position.set( -500, 1800, -1200 );
+	scene.add( LF );
+	
+	var LM = new THREE.PointLight( 0xffffff , 3, 2500 ,2 );
+	LM.position.set( -500, 1800, -0 );
+	scene.add( LM )
+
+	
+	var LB = new THREE.PointLight( 0xffffff , 3, 2500 ,2 );
+	LB.position.set( -500, 1800, 1200 );
+	scene.add( LB )
+
 
 	/*******************************************
 	*************Laddar modellerna**************
@@ -228,7 +250,7 @@ function createscene()
 	Exit = new Mloader(Exit_url,false)
 	modell_loader(Exit);
 	scene.add(Exit.object);
-	Exit.object.visible = false;
+	Exit.object.visible = true;
 	
 	
 	// KOMMENTERA!!!!!!!!!
@@ -535,7 +557,7 @@ function movement(){
     		speedY = 25; //5
 			if(silence == false)
 			{
-				SFXvol_controll[0].play();
+				SFXvol_controll[2].play();
 			}
     	}
 	}
