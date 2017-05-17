@@ -152,15 +152,6 @@ Raytracer3V.prototype.setRaytracer = function(org, dest){
 
 
 
-
-
-
-
-
-
-
-
-
 /////////////////////////
 ////*****************////
 ////   Funktioner	////
@@ -221,7 +212,7 @@ function createscene()
 		scene.add(models[i].object);
 	}
 	//Laddar objektivet
-	objectiv = new Mloader(objectiv_url,false)
+	objectiv = new Mloader(objectiv_url,true)
 	modell_loader(objectiv);
 	scene.add(objectiv.object);
 	
@@ -364,10 +355,10 @@ function draw()
 			stop_game = false;
 		}
 		
-		// Test till en egen raycaster
+		/*// Test till en egen raycaster
 		var ray = new Raytracer3V();
 		ray.param =camera.lookAt(ray.origin);
-		console.log(ray.param);
+		console.log(ray.param);*/
 		
 		//Kör animationer
 		animation_chooser();
@@ -408,9 +399,6 @@ function create_collisionBox()
 	boxiT = new THREE.Mesh( boxT, golvmaterial );
 	boxiG = new THREE.Mesh( boxG, golvmaterial);
 }	
-
-
-
 
 
 
@@ -466,18 +454,17 @@ function render_options(){
 	renderer.setSize( window.innerWidth, window.innerHeight );
 }
 
-//Handksar om man byter storlek på skärmen "Stefans"
+//Handskar om man byter storlek på skärmen "Tog den från labben så den tillhör Stefan"
 function onWindowResize() {
 				windowHalfX = window.innerWidth ;
 				windowHalfY = window.innerHeight ;
 
 				camera.aspect = window.innerWidth / window.innerHeight;
 				camera.updateProjectionMatrix();
-
 				renderer.setSize( window.innerWidth, window.innerHeight );
 			}
 
-
+// Ger den lilla rutan i vänster hörn, tagen från THREEx 
 function render_checkbox()
 {
 	rendererStats= new THREEx.RendererStats()
@@ -485,6 +472,7 @@ function render_checkbox()
 	rendererStats.domElement.style.bottom	= '0px'
 	document.body.appendChild( rendererStats.domElement )
 }
+
 
 function movement(){
 
@@ -564,6 +552,7 @@ function Collision(obj){
 	return true;
 }
 
+
 modell_loader = function(object)
 {	
 	loader.load(object.url,function (data)
@@ -580,7 +569,18 @@ modell_loader = function(object)
 			{
 				if (mesh.geometry.animations)
                   {
-                     var mixer = new THREE.AnimationMixer(mesh);
+					var mixer = []
+					for(var l = 0; l< mesh.geometry.animations.length; ++l)
+					{
+						mixer[l] = new THREE.AnimationMixer(mesh);
+					} 
+					for(var k = 0; k< mesh.geometry.animations.length; ++k)
+					{
+						object.mixers[k]= mixer[k];
+						mixer[k].clipAction(mesh.geometry.animations[k]).play();
+					}	
+					
+                    /* var mixer = new THREE.AnimationMixer(mesh);
                      object.mixers[0]= mixer;
                      mixer.clipAction(mesh.geometry.animations[0]).play();
 					 
@@ -607,6 +607,7 @@ modell_loader = function(object)
 					 var mixer6 = new THREE.AnimationMixer(mesh);
                      object.mixers[6]= mixer6;
                      //mixer6.clipAction(mesh.geometry.animations[6]).play();
+					 */
                   }
 			}
 		}
