@@ -557,8 +557,9 @@ modell_loader = function(object)
 {	
 	loader.load(object.url,function (data)
 	{
-		
+		console.log(object);
 		var multiMaterial = new THREE.MultiMaterial(data.materials);
+		
 		for (var i = 0; i < data.geometries.length; ++i)
 		{
 			var mesh = new THREE.SkinnedMesh(data.geometries[i], multiMaterial);
