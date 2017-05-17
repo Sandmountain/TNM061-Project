@@ -1,23 +1,47 @@
+/////////////////////////
 ////*****************////
 ////   Variabler Def ////
 ////*****************////
+////////////////////////
 
-//FPS Detta behlvs byta ut mot tid delta
+////*****************////
+////   Diverse Var	 ////
+////*****************////
+
+//FPS denna sänker renderingsloopens hastighet, därmot kan vi inte göra något mot webläsarens FPS
 var fps = 60;
-var A_speed = 4;
 
 // De viktiga variablerna för kamera osv
 var camera,temp_camera, scene, renderer,rendererStats, canvas;
+
+//BYT NAMN!!!!!!
 var n = 0;
+
 //Tar in storleken av fönstret
 var windowHalfX = window.innerWidth ;
 var windowHalfY = window.innerHeight ;
 
-//Lista med url till modeller
+//Klass som handskar tangenbordstryck
+var keyboard= new THREEx.KeyboardState();
+
+// Variabel som stoppar renderingsloopen
+var stop_game = true;
+
+//Om nyckel är tagen
+var key_taken = false;
+
+//Räknar frames som kollar vilken animation som skall köras
+var landing_count = 0;
+var hopp_count = 0;
 
 
+
+////*****************////
+////   MODELLERS	 ////
+////*****************////
+
+// URL adresser till modellerna, de som har fått egna variabler är sådana object som något händer med.
 var Mandeln_url = "./Models/Mandel/animationRotated.JD";
-
 var model_url = ["./Models/Levels/Level_1/doorh.jd","./Models/Levels/Level_1/doorv.jd","./Models/Levels/Level_1/pipe.jd","./Models/Levels/Level_1/barrel1.jd","./Models/Levels/Level_1/barrel2.jd","./Models/Levels/Level_1/barrel3.jd","./Models/Levels/Level_1/barrel4.jd","./Models/Levels/Level_1/barrel5.jd"
 ,"./Models/Levels/Level_1/fencewall1.jd","./Models/Levels/Level_1/fencewall2.jd","./Models/Levels/Level_1/floor.jd","./Models/Levels/Level_1/kortsida1.jd","./Models/Levels/Level_1/kortsida2.jd","./Models/Levels/Level_1/lada1.jd","./Models/Levels/Level_1/lada2.jd"
 ,"./Models/Levels/Level_1/lada3.jd","./Models/Levels/Level_1/lada4.jd","./Models/Levels/Level_1/lada5.jd","./Models/Levels/Level_1/lada6.jd","./Models/Levels/Level_1/lada7.jd","./Models/Levels/Level_1/lada8.jd"
@@ -30,17 +54,18 @@ var Exit_url = "./Models/Levels/Level_1/Exit.jd";
 var Mandeln;
 var models = [model_url.length];
 var Exit;
-
-//Ljussättning
-var ljus;
+var objectiv;
 
 //Kollisions variablerna
 var boxobject = [model_url.length];
 var objectiv_crash;
 var Exit_crash;
-var stop = true;
+var Mandeln_crash
 
-// Mina object som skapas.
+//Ljussättning
+var ljus;
+
+//	Object som kollar kollisionen
 var Cboll = new THREE.Group();
 var cBoll2 = new THREE.Group();
 var cBoll3 = new THREE.Group();
@@ -49,44 +74,36 @@ var cBollJump2 = new THREE.Group();
 var cBollJumpPos;
 var cBollJumpPos2;
 
+// Innehåller kollsionsmeshen
 var collision;
 var collidableMeshList = [model_url.lenght];
 
-//Klass som handskar tangenbordstryck
-var keyboard= new THREEx.KeyboardState();
+// Denna används för att kolla när hoppanimationen ska sluta
+var floor_collision;
 
 
+
+
+////*****************////
+//// Fysikvariabler	 ////
+////*****************////
 
 var can_jump = true;
 var in_air = false;
 var grav = -0.5;
-//counter
-var j = 0;
-
-var golv_collision;
-
 var speedX = 0;
 var speedY = 0;
 var speedZ = 0;
 
 var veloY = 0;
 
-//Om nyckel är tagen
-var key_taken = false;
 
-//Räknar frames som gubben står stilla
-var landing_count = 0;
-var hopp_count = 0;
 
-//Variable for modell
-var meshes = [];
-var mixers = [];
-var clock = new THREE.Clock; 
-var loader = new THREE.JDLoader();
-var material;
-
-// Raycaster
-var raycaster = new THREE.Raycaster();
+////*****************////
+////   LjudVaribler	 ////
+////*****************////
+//Räknar vilken röst inspelning som skall köras
+var Audio_Voice_counter = 0;
 
 //ljuddeklaration
 var silence = false;
@@ -99,23 +116,24 @@ var silence = false;
 	engelbrekt = new Audio("./Audio/DrEngel.mp3")
 	findKey = new Audio("./Audio/FindKey.mp3")
 
-	//Ljudarray
-	var SFXvol_controll = [jump, walk, ugh, tGround, foundKey, engelbrekt, findKey];
+//Ljudarray
+var SFXvol_controll = [jump, walk, ugh, tGround, foundKey, engelbrekt, findKey];
+
+
+
 ////*****************////
 //// Tansformationer ////
 ////*****************////
-var rotera = new THREE.Group();
-//Vrider kameran så att man ser snett uppifrån
-rotera.rotation.x = Math.PI;
 
-var kamera_initial_pos = new THREE.Group();
 //Vrider kameran så att man ser snett uppifrån
+var kamera_initial_pos = new THREE.Group();
 kamera_initial_pos.rotation.y = -Math.PI;
 kamera_initial_pos.rotation.x = Math.PI/8;
 
 
-var mouse = new THREE.Vector2(0,0.2);
-var raycaster = new THREE.Raycaster();
+////*****************////
+//// Raycaster egen ////
+////*****************////
 
 function Raytracer3V()
 {
@@ -133,70 +151,21 @@ Raytracer3V.prototype.setRaytracer = function(org, dest){
 }
 
 
+
+
+
+
+
+
+
+
+
+
+/////////////////////////
 ////*****************////
-////   Funktioner!!! ////
+////   Funktioner	////
 ////*****************////
-
-
-//ljudfunktioner
-	
-	//Skapa bakgrundsmusik
-	snd.addEventListener('ended', function() {
-    this.currentTime = 0;
-    this.play();
-	}, false);
-	setTimeout( play_func, 1500 );
-		function play_func(){
-		snd.play();
-		}
-	
-	
-	//ljudeffekter
-	window.addEventListener("keydown", checkKeyPressed, false);
-	
-	function checkKeyPressed(e) {
-    	if (e.keyCode == "90") {
-    		togglePlay();
-    		
-    		//använd knapp med <a onClick="togglePlay()">Click here to hear.</a>
-		}
-		if (e.keyCode == "88") {
-					if(silence == true){
-						silence = false;
-					}else{	
-						silence = true;
-					} 			
-    		//använd knapp med <a onClick="togglePlay()">Click here to hear.</a>
-		}	
-	}
-
-	//pause backgroundmusic
-	function togglePlay() {
-        		
-  			return snd.paused ? snd.play() : snd.pause();
-
-	};  
-
-	function muteSFX(){
-		
-		if(silence == true){
-				silence = false;
-			}else{	
-				silence = true;
-			}
-	}   
-
-
-
-function onMouseMove( event ) {
-
-	// calculate mouse position in normalized device coordinates
-	// (-1 to +1) for both components
-
-	mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-
-}
+////////////////////////
 
 //Funktion som startar allt, kallas från html filen
 function start()
@@ -215,32 +184,37 @@ function createscene()
 	camera = new THREE.PerspectiveCamera( 50, window.innerWidth/window.innerHeight, 0.1, 10000);
 	camera.position.z = 800;
 	
+	//Sätter renderings inställningarna
+	render_options();
+
+	//Kopplar en lyssnare till window. Ifall man ändrar storleken på fönstret så kommer den köra "onWindowResize"
+	window.addEventListener( 'resize', onWindowResize, false );
+
+	//Lägger in så att det som renderas hamnar i diven
+	canvas.appendChild(renderer.domElement);
 	
-	//Skapar scenen
+	// Skapar den lilla rutan i vänster hörn
+	render_checkbox();
+	
+	//Skapar scen stacken
 	scene = new THREE.Scene();
 	
-
 	/*******************************************
 	********     Ljussättning    ***************
 	*******************************************/
-	
-	
+	//ambient ljussättning
 	var ambient = new THREE.AmbientLight( 0x444444 );
 	scene.add( ambient );
-
-
-
 	
-	/*var directionalLight = new THREE.DirectionalLight( 0xffeedd,0.1 );
+	// Directional ljus
+	var directionalLight = new THREE.DirectionalLight( 0xffeedd,0.1 );
 	directionalLight.position.set(0 , 100, 0 ).normalize();
-<<<<<<< HEAD
-	scene.add( directionalLight );*/
+	scene.add( directionalLight );
 
-	
 	/*******************************************
 	*************Laddar modellerna**************
 	*******************************************/
-	//Object
+	// Alla modeller som inte behöver specialkontrolleras
 	for(var i = 0; i<model_url.length; ++i){	
 		models[i] = new Mloader(model_url[i],false)
 		modell_loader(models[i]);
@@ -250,7 +224,6 @@ function createscene()
 	objectiv = new Mloader(objectiv_url,false)
 	modell_loader(objectiv);
 	scene.add(objectiv.object);
-	
 	
 	//Laddar spelaren
 	Mandeln = new Mloader(Mandeln_url,true)
@@ -266,6 +239,8 @@ function createscene()
 	scene.add(Exit.object);
 	Exit.object.visible = false;
 	
+	
+	// KOMMENTERA!!!!!!!!!
 	create_collisionBox()
 	Mandeln.object.add(boxiF);
 	boxiF.translateZ(-40).translateY(50).translateX(5);
@@ -292,19 +267,125 @@ function createscene()
 	boxiG.visible = false;
 	boxiT.visible = false;
 	
-
-	//Set the rendering settings
-	render_options();
-
-	//Kopplar en lyssnare till window. Ifall man ändrar storleken på fönstret så kommer den köra "onWindowResize"
-	window.addEventListener( 'resize', onWindowResize, false );
-
-	//Lägger in så att det som renderas hamnar i diven
-	canvas.appendChild(renderer.domElement);
-
-	render_checkbox();
-	
 }
+
+//renderingsloop
+function draw()
+{
+	// Loopar över draw functionen och sänker fps'n till 60fps
+	setTimeout(function() {
+		
+		if(Audio_Voice_counter == 0){
+			setTimeout(function(){ 
+				SFXvol_controll[6].play();
+				Audio_Voice_counter= 1;   
+							
+			}, 1500); 
+		}
+		
+		if(Audio_Voice_counter == 1)
+		{	
+			setTimeout(function(){ 
+				SFXvol_controll[5].play();
+				Audio_Voice_counter = 2;   
+				
+			}, 20000);
+		}
+
+		// Ritar upp scenen
+		renderer.render(scene, camera);
+		rendererStats.update(renderer);
+
+		//Skapar kollisionsobjecten
+		for(var i=0; i <models.length;++i)
+		{
+			boxobject[i] = new THREE.Box3().setFromObject(models[i].object);
+		}
+		objectiv_crash = new THREE.Box3().setFromObject(objectiv.object);
+		Mandeln_crash = new THREE.Box3().setFromObject(Mandeln.object);
+		boxiObjFront = new THREE.Box3().setFromObject(boxiF);
+		boxiObjBack = new THREE.Box3().setFromObject(boxiB);
+		boxiObjLeft = new THREE.Box3().setFromObject(boxiL);
+		boxiObjRight = new THREE.Box3().setFromObject(boxiR);
+		boxiObjGround = new THREE.Box3().setFromObject(boxiG);
+		boxiObjTop = new THREE.Box3().setFromObject(boxiT);
+
+
+		cBollJump = Mandeln.object.clone();
+		cBollJump2 = Mandeln.object.clone();
+		cBoll = Mandeln.object.clone();
+		cBoll2 = Mandeln.object.clone();
+		cBoll3 = Mandeln.object.clone();
+		
+
+		gravity(boxiObjGround, boxiObjTop);
+		
+		// Kollar om gubben ska röra sig
+		movement();
+		
+		//Kollar om nyckeln plockas upp
+		if(Mandeln_crash.intersectsBox(objectiv_crash))
+		{
+			objectiv.object.visible= false;
+			key_taken = true;
+			if(silence == false)
+			{
+				SFXvol_controll[4].play();
+			}
+		}
+		
+		// om nyckel är öppnar den dörrarna och skapar ett nytt object som fixar så banan kan sluta 
+		if(key_taken)
+		{
+			//Öppnar dörrarna 
+			if(models[0].object.position.x>-200)
+			{
+				models[0].object.position.x -= 2;
+			}
+			if(models[1].object.position.x<200)
+			{
+				models[1].object.position.x += 2;
+			}
+			
+			//Skapar kollisions blocket så banan kan sluta
+			Exit_crash = new THREE.Box3().setFromObject(Exit.object);
+			//stoppar spelet
+			if(boxiObjBack.intersectsBox(Exit_crash))
+			{
+				document.location.href = "file:///H:/TNM061/Projekt%200.9/TNM061.project/index.html" ;
+				stop_game = false;
+			}
+		}
+		
+		//Ifall någon trycker esc så slutar spelet
+		if(keyboard.pressed("escape"))
+		{
+			document.location.href = "file:///H:/TNM061/Projekt%200.9/TNM061.project/index.html" ;
+			stop_game = false;
+		}
+		
+		// Test till en egen raycaster
+		var ray = new Raytracer3V();
+		ray.param =camera.lookAt(ray.origin);
+		console.log(ray.param);
+		
+		//Kör animationer
+		animation_chooser();
+		
+		//uppdaterar spelet
+		if(stop_game) 
+		{
+			requestAnimationFrame(draw);
+		}
+		
+		//Felloggnings utskrivningar
+		//console.log("x: " +Mandeln.object.position.x)
+		//console.log("y: " +Mandeln.object.position.y)
+		//console.log("z: " +Mandeln.object.position.z)
+		
+	}, 1000 / fps);
+}
+
 function create_collisionBox()
 {
 	//Skpapar bollen
@@ -328,131 +409,14 @@ function create_collisionBox()
 	boxiG = new THREE.Mesh( boxG, golvmaterial);
 }	
 
-//renderingsloop
-function draw()
-{
-	setTimeout(function(){ 
-	
-					if(j == 0){
-						SFXvol_controll[6].play();
-				     j = 1;   
-					}
-				    }, 1500); 
-	
-					
-	setTimeout(function(){ 
-			if(j == 1){
-						SFXvol_controll[5].play();
-				     j = 2;   
-			}
-				    }, 20000);
-	// Loopar över draw functionen och sänker fps'n till 60fps
-	setTimeout(function() {
-	// draw THREE.JS scene
-	renderer.render(scene, camera);
-	rendererStats.update(renderer);
 
-	//Kör animationer
-	animation_chooser();
-	
-	//Skapar kollisionsobjecten
-	for(var i=0; i <models.length;++i){
-		boxobject[i] = new THREE.Box3().setFromObject(models[i].object);
-	}
-	objectiv_crash = new THREE.Box3().setFromObject(objectiv.object);
-	var Mandeln_crash = new THREE.Box3().setFromObject(Mandeln.object);
-	
-	boxiObjFront = new THREE.Box3().setFromObject(boxiF);
-	boxiObjBack = new THREE.Box3().setFromObject(boxiB);
-	boxiObjLeft = new THREE.Box3().setFromObject(boxiL);
-	boxiObjRight = new THREE.Box3().setFromObject(boxiR);
-	boxiObjGround = new THREE.Box3().setFromObject(boxiG);
-	boxiObjTop = new THREE.Box3().setFromObject(boxiT);
-
-	//myFunc(boxobject);
-	cBollJump = Mandeln.object.clone();
-	cBollJump2 = Mandeln.object.clone();
-	cBoll = Mandeln.object.clone();
-	cBoll2 = Mandeln.object.clone();
-	cBoll3 = Mandeln.object.clone();
-	
-	//rotera_nyckeln.rotation.y += 0.02;
-
-    gravity(boxiObjGround, boxiObjTop);
-	movement();
-
-	if(Mandeln_crash.intersectsBox(objectiv_crash)){
-		objectiv.object.visible= false;
-		key_taken = true;
-		if(silence == false){
-			SFXvol_controll[4].play();
-			}
-	}
-	//camera.position.z = 800;
-	//console.log("x: " + mouse.x + "  y: "+ mouse.y);
-	
-	/*raycaster.setFromCamera(mouse,camera );
-	var array =raycaster.intersectObject(scene, true);
-	//console.log("första: " +array.length);
-	if(array.length >2)
-	{
-		console.log(array.length )
-		if(camera.position.z>400){
-			camera.position.y += 2
-			camera.position.z -= 20;
-		}
-	}else{
-		if(camera.position.z<800){
-			camera.position.y -= 2
-			camera.position.z += 20;
-		}
-	}
-	*/
-	
-	if(key_taken){
-		
-		if(models[0].object.position.x>-200){
-			models[0].object.position.x -= 2;
-		}
-		if(models[1].object.position.x<200){
-			models[1].object.position.x += 2;
-		}
-		Exit.object.visible = true;
-		
-		Exit_crash = new THREE.Box3().setFromObject(Exit.object);
-		if(boxiObjBack.intersectsBox(Exit_crash)){
-			document.location.href = "file:///H:/TNM061/Projekt%200.9/TNM061.project/index.html" ;
-			stop = false;
-		}
-	}
-	if(keyboard.pressed("escape")){
-		document.location.href = "file:///H:/TNM061/Projekt%200.9/TNM061.project/index.html" ;
-		stop = false;
-	}
-	if(stop)  	
-		requestAnimationFrame(draw);
-	
-	//console.log("x: " +Mandeln.object.position.x)
-	//console.log("y: " +Mandeln.object.position.y)
-	//console.log("z: " +Mandeln.object.position.z)
-    }, 1000 / fps);
-
-
-	//window.addEventListener( 'mousemove', onMouseMove, false );
-
-
-	var ray = new Raytracer3V();
-	//ray.setRaytracer(Mandeln.object.position, camera.position);
-	ray.param =camera.lookAt(ray.origin);
-	console.log(ray.param);
-}
 
 
 
 
 function gravity(){
 	var bool = Collision(boxiObjGround);
-	golv_collision = Collision(boxiObjGround);
+	floor_collision = Collision(boxiObjGround);
 	if(bool)
 	{
 		in_air = true;
@@ -665,7 +629,7 @@ animation_chooser = function(){
 			hopp_count+=Mandeln.meshes[0].geometry.animations[0].duration/8;
 			
 		
-		}else if(golv_collision){
+		}else if(floor_collision){
 			//Startar nästa mixer
 			Mandeln.mixers[1].clipAction(Mandeln.meshes[0].geometry.animations[1]).play();
 			//Uppdaterar nästa mixer
@@ -713,6 +677,57 @@ animation_chooser = function(){
 
 
 
+////*****************////
+////   Ljudfunktioner ////
+////*****************////
 
+	//Skapa bakgrundsmusik
+	snd.addEventListener('ended', function() {
+    this.currentTime = 0;
+    this.play();
+	}, false);
+	setTimeout( play_func, 1500 );
+		function play_func(){
+		snd.play();
+		}
+	
+	
+	//ljudeffekter
+	window.addEventListener("keydown", checkKeyPressed, false);
+	
+	function checkKeyPressed(e) {
+    	if (e.keyCode == "90") {
+    		togglePlay();
+    		
+    		//använd knapp med <a onClick="togglePlay()">Click here to hear.</a>
+		}
+		if (e.keyCode == "88") {
+					if(silence == true){
+						silence = false;
+					}else{	
+						silence = true;
+					} 			
+    		//använd knapp med <a onClick="togglePlay()">Click here to hear.</a>
+		}	
+	}
 
+	//pause backgroundmusic
+	function togglePlay() {
+        		
+  			return snd.paused ? snd.play() : snd.pause();
+
+	};  
+
+	function muteSFX(){
+		
+		if(silence == true){
+				silence = false;
+			}else{	
+				silence = true;
+			}
+	}   
+
+////*****************////
+////Diverse funktioner ////
+////*****************////
 
