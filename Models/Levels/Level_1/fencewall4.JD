@@ -7,10 +7,18 @@
     "materials": [
         {
             "name": "WireColorMat_3",
-            "diffuse": [0.603922,0.72549,0.898039],
+            "diffuse": [0.3,0.3,0.3],
             "specular": [0,0,0],
             "glossiness": 0,
-            "opacity": 1
+            "opacity": 1,
+			"maps": [
+                {
+                    "name": "lada",
+                    "type": "diffuse",
+                    "uvsIndex": 0,
+                    "file": "fence_texture4.png"
+                }
+            ]
         }
     ],
     "model": 

@@ -42,11 +42,15 @@ var hopp_count = 0;
 
 // URL adresser till modellerna, de som har fått egna variabler är sådana object som något händer med.
 var Mandeln_url = "./Models/Mandel/animationRotated.JD";
-var model_url = ["./Models/Levels/Level_1/doorh.jd","./Models/Levels/Level_1/doorv.jd","./Models/Levels/Level_1/pipe.jd","./Models/Levels/Level_1/barrel1.jd","./Models/Levels/Level_1/barrel2.jd","./Models/Levels/Level_1/barrel3.jd","./Models/Levels/Level_1/barrel4.jd","./Models/Levels/Level_1/barrel5.jd"
-,"./Models/Levels/Level_1/fencewall1.jd","./Models/Levels/Level_1/fencewall2.jd","./Models/Levels/Level_1/floor.jd","./Models/Levels/Level_1/kortsida1.jd","./Models/Levels/Level_1/kortsida2.jd","./Models/Levels/Level_1/lada1.jd","./Models/Levels/Level_1/lada2.jd"
+var model_url = ["./Models/Levels/Level_1/doorh.jd","./Models/Levels/Level_1/doorv.jd","./Models/Levels/Level_1/pipe.jd","./Models/Levels/Level_1/barrel1.jd","./Models/Levels/Level_1/barrel2.jd","./Models/Levels/Level_1/barrel3.jd"
+,"./Models/Levels/Level_1/barrel4.jd","./Models/Levels/Level_1/barrel5.jd","./Models/Levels/Level_1/fencewall1.jd","./Models/Levels/Level_1/fencewall2.jd","./Models/Levels/Level_1/floor.jd"
+,"./Models/Levels/Level_1/kortsida1tjock.jd","./Models/Levels/Level_1/kortsida2tjock.jd","./Models/Levels/Level_1/lada1.jd","./Models/Levels/Level_1/lada2.jd"
 ,"./Models/Levels/Level_1/lada3.jd","./Models/Levels/Level_1/lada4.jd","./Models/Levels/Level_1/lada5.jd","./Models/Levels/Level_1/lada6.jd","./Models/Levels/Level_1/lada7.jd","./Models/Levels/Level_1/lada8.jd"
-,"./Models/Levels/Level_1/lastpall.jd","./Models/Levels/Level_1/lastpall2.jd","./Models/Levels/Level_1/lastpall3.jd","./Models/Levels/Level_1/lastpall4.jd","./Models/Levels/Level_1/longsida1.jd","./Models/Levels/Level_1/longsida2.jd"
-,"./Models/Levels/Level_1/platta.jd","./Models/Levels/Level_1/fencewall3.jd","./Models/Levels/Level_1/fencewall4.jd","./Models/Levels/Level_1/fencewall6.jd"];
+,"./Models/Levels/Level_1/lastpall.jd","./Models/Levels/Level_1/lastpall2.jd","./Models/Levels/Level_1/lastpall3.jd","./Models/Levels/Level_1/langsida1tjock.jd","./Models/Levels/Level_1/langsida2tjock.jd"
+,"./Models/Levels/Level_1/platta.jd","./Models/Levels/Level_1/fencewall3.jd","./Models/Levels/Level_1/fencewall4.jd","./Models/Levels/Level_1/fencewall5.jd","./Models/Levels/Level_1/fencewall6.jd"
+,"./Models/Levels/Level_1/lastpall.jd","./Models/Levels/Level_1/lastpall2.jd","./Models/Levels/Level_1/lastpall3.jd","./Models/Levels/Level_1/longsida1.jd","./Models/Levels/Level_1/longsida2.jd"
+,"./Models/Levels/Level_1/platta.jd","./Models/Levels/Level_1/fencewall3.jd","./Models/Levels/Level_1/fencewall4.jd","./Models/Levels/Level_1/fencewall6.jd"
+,"./Models/Levels/Level_1/trappa1.jd","./Models/Levels/Level_1/trappa2.jd","./Models/Levels/Level_1/trappa3.jd","./Models/Levels/Level_1/trappa4.jd","./Models/Levels/Level_1/trappa5.jd"];
 var objectiv_url = "./Models/Levels/Level_1/keyrotated.jd";
 var Exit_url = "./Models/Levels/Level_1/Exit.jd";
 
@@ -195,7 +199,6 @@ function createscene()
 	//ambient ljussättning
 	var ambient = new THREE.AmbientLight( 0x444444, 0.2 );
 	scene.add( ambient );
-	
 
 	var RF = new THREE.PointLight( 0xffffff , 3, 2500 ,2 );
 	RF.position.set( 500, 1800, -1200 );
@@ -253,32 +256,55 @@ function createscene()
 	Exit.object.visible = true;
 	
 	
-	// KOMMENTERA!!!!!!!!!
-	create_collisionBox()
-	Mandeln.object.add(boxiF);
-	boxiF.translateZ(-40).translateY(50).translateX(5);
-	//box bak
+	// funktion som skapar object för kollision
+	create_collisionBox();
+
+	//boxar för kollektion, lägger dom så de följer spelaren
 	Mandeln.object.add(boxiB);
-	boxiB.translateZ(55).translateY(50).translateX(5);
-	//box Right
+	//lägger de på rätt plats
+	boxiB.translateZ(-40).translateY(80).translateX(5);
+	//box fram
+	Mandeln.object.add(boxiF);
+	boxiF.translateZ(55).translateY(80).translateX(5);
+	//box Left
 	Mandeln.object.add(boxiL);
-	boxiL.translateZ(5).translateY(50).translateX(40);
-	//Box LEft
+	boxiL.translateZ(5).translateY(80).translateX(40);
+	//Box Right
 	Mandeln.object.add(boxiR);
-	boxiR.translateZ(5).translateY(50).translateX(-30);
+	boxiR.translateZ(5).translateY(80).translateX(-30);
 	//Box ground
 	Mandeln.object.add(boxiG);
-	boxiG.translateZ(5).translateY(-2).translateX(10);
+	boxiG.translateZ(5).translateY(-4).translateX(10);
 	//box top
 	Mandeln.object.add(boxiT);
 	boxiT.translateZ(15).translateY(100).translateX(10);
 	
+	//boxes för trappan, likadant fast så man vet ifall han ska gå upp för trappa
+	//box fram
+	Mandeln.object.add(rampBoxiF);
+	rampBoxiF.translateZ(40).translateY(33).translateX(5);
+	//box bak
+	Mandeln.object.add(rampBoxiB);
+	rampBoxiB.translateZ(-40).translateY(33).translateX(5);
+	//box left
+	Mandeln.object.add(rampBoxiL);
+	rampBoxiL.translateZ(5).translateY(33).translateX(40);
+	//box right
+	Mandeln.object.add(rampBoxiR);
+	rampBoxiR.translateZ(5).translateY(33).translateX(-30);
+
+	//döljer alla boxar så de inte syns
 	boxiL.visible = false;
 	boxiR.visible = false;
 	boxiB.visible = false;
 	boxiF.visible = false;
 	boxiG.visible = false;
 	boxiT.visible = false;
+	rampBoxiF.visible = false;
+	rampBoxiB.visible = false;
+	rampBoxiL.visible = false;
+	rampBoxiR.visible = false;
+	
 	
 }
 
@@ -316,21 +342,19 @@ function draw()
 		}
 		objectiv_crash = new THREE.Box3().setFromObject(objectiv.object);
 		Mandeln_crash = new THREE.Box3().setFromObject(Mandeln.object);
+		
 		boxiObjFront = new THREE.Box3().setFromObject(boxiF);
 		boxiObjBack = new THREE.Box3().setFromObject(boxiB);
 		boxiObjLeft = new THREE.Box3().setFromObject(boxiL);
 		boxiObjRight = new THREE.Box3().setFromObject(boxiR);
 		boxiObjGround = new THREE.Box3().setFromObject(boxiG);
 		boxiObjTop = new THREE.Box3().setFromObject(boxiT);
+		boxiObjRampF = new THREE.Box3().setFromObject(rampBoxiF);
+		boxiObjRampB = new THREE.Box3().setFromObject(rampBoxiB);
+		boxiObjRampL = new THREE.Box3().setFromObject(rampBoxiL);
+		boxiObjRampR = new THREE.Box3().setFromObject(rampBoxiR);
 
-
-		cBollJump = Mandeln.object.clone();
-		cBollJump2 = Mandeln.object.clone();
-		cBoll = Mandeln.object.clone();
-		cBoll2 = Mandeln.object.clone();
-		cBoll3 = Mandeln.object.clone();
-		
-
+		//kollar om den ska ha gravitation
 		gravity(boxiObjGround, boxiObjTop);
 		
 		// Kollar om gubben ska röra sig
@@ -363,9 +387,10 @@ function draw()
 			//Skapar kollisions blocket så banan kan sluta
 			Exit_crash = new THREE.Box3().setFromObject(Exit.object);
 			//stoppar spelet
-			if(boxiObjBack.intersectsBox(Exit_crash))
+			if(boxiObjFront.intersectsBox(Exit_crash))
 			{
-				document.location.href = "file:///H:/TNM061/Projekt%200.9/TNM061.project/index.html" ;
+				console.log("Vagg");
+				document.location.href = "./index.html" ;
 				stop_game = false;
 			}
 		}
@@ -401,25 +426,32 @@ function draw()
 
 function create_collisionBox()
 {
-	//Skpapar bollen
-	var boxfB = new THREE.BoxGeometry( 70, 80, 5);
-	var boxLR = new THREE.BoxGeometry( 5, 80, 70);
-	var boxT = new THREE.CylinderGeometry( 35, 35, 5);
-	var boxG = new THREE.CylinderGeometry( 25, 25, 5,20);
+	//skapar boxar för kollision
+	var boxfB = new THREE.BoxGeometry( 70, 40, 5);
+	var boxLR = new THREE.BoxGeometry( 5, 40, 70);
+	var boxT = new THREE.CylinderGeometry( 25, 25, 5);
+	var boxG = new THREE.CylinderGeometry( 25, 25, 5);
+	var rampBoxFB = new THREE.BoxGeometry(70,45,5);
+	var rampBoxLR = new THREE.BoxGeometry( 5, 45, 70);
 	
 	
-	//Material till bollen
+	
 	var golvmaterial = new THREE.MeshBasicMaterial;
 	
-	// Texture laddar variabel
+
 	
-	// Lägger in geometrin och materialet på vårt object
+	// Lägger in geometrin och materialet på varje objekt för kollision
 	boxiF = new THREE.Mesh( boxfB, golvmaterial );
 	boxiR = new THREE.Mesh( boxLR, golvmaterial );
 	boxiB = new THREE.Mesh( boxfB, golvmaterial );
 	boxiL = new THREE.Mesh( boxLR, golvmaterial );
 	boxiT = new THREE.Mesh( boxT, golvmaterial );
 	boxiG = new THREE.Mesh( boxG, golvmaterial);
+	//kollisionsobjekt för att kunna gå i trappor
+	rampBoxiF = new THREE.Mesh(rampBoxFB,new THREE.MeshBasicMaterial({color: 0xff3300}));
+	rampBoxiB = new THREE.Mesh(rampBoxFB,new THREE.MeshBasicMaterial({color: 0xff3300}));
+	rampBoxiL = new THREE.Mesh(rampBoxLR,new THREE.MeshBasicMaterial({color: 0xff3300}));
+	rampBoxiR = new THREE.Mesh(rampBoxLR,new THREE.MeshBasicMaterial({color: 0xff3300}));
 }	
 
 
@@ -456,8 +488,8 @@ function gravity(){
 	}
 
 	var speed = speedY + grav*(n*3);
-	if(speed < -15){
-		speed = -15;
+	if(speed < -12){
+		speed = -12;
 	}
 
 	Mandeln.object.position.y += speed;
@@ -512,44 +544,97 @@ function movement(){
 	}
 	if(keyboard.pressed("down"))
     {	
-		if(Collision(boxiObjFront))
-		{	
-			Mandeln.object.translateZ( -moveDistance );
-			
+
+		if(!in_air){
+    		
+			if(Collision(boxiObjBack))
+			{
+				if(!(Collision(boxiObjRampB))){
+					Mandeln.object.translateY(33);
+				}
+				Mandeln.object.translateZ( -moveDistance );
+
+			}
 		}
+		else{
+			
+			if(Collision(boxiObjBack) && Collision(boxiObjRampB))
+			{
+				Mandeln.object.translateZ( -moveDistance );
+			}
+		}
+
 
 	}
 	
 	if(keyboard.pressed("up"))
     {	
-		if(Collision(boxiObjBack))
-		{
-			Mandeln.object.translateZ( moveDistance );
-		}	
-	}
-	if(keyboard.pressed("ERigth"))
-    {		
-		if(Collision(boxiObjLeft))
-		{
-			Mandeln.object.translateX( moveDistance );
-			if(silence == false)
+    	if(!in_air){
+    		
+			if(Collision(boxiObjFront))
 			{
-				SFXvol_controll[1].play();
+				if(!(Collision(boxiObjRampF))){
+					Mandeln.object.translateY(33);
+				}
+				Mandeln.object.translateZ( moveDistance );
+
+			}
+		}
+		else{
+			
+			if(Collision(boxiObjFront) && Collision(boxiObjRampF))
+			{
+				Mandeln.object.translateZ( moveDistance );
+			}
+		}
+		
+	}
+	if(keyboard.pressed("QLeft"))
+    {		
+    	if(!in_air){
+    		
+			if(Collision(boxiObjLeft))
+			{
+				if(!(Collision(boxiObjRampL))){
+					Mandeln.object.translateY(33);
+				}
+				Mandeln.object.translateX( moveDistance );
+
+			}
+		}
+		else{
+			
+			if(Collision(boxiObjLeft) && Collision(boxiObjRampL))
+			{
+				Mandeln.object.translateX( moveDistance );
 			}
 		}
 	}
 
-	if(keyboard.pressed("QLeft"))
+	if(keyboard.pressed("ERigth"))
     {	
-		if(Collision(boxiObjRight))
-		{
-			Mandeln.object.translateX( -moveDistance );
-			if(silence == false)
+
+		if(!in_air){
+    		
+			if(Collision(boxiObjRight))
 			{
-				SFXvol_controll[1].play();
+				if(!(Collision(boxiObjRampR))){
+					Mandeln.object.translateY(33);
+				}
+				Mandeln.object.translateX( -moveDistance );
+
 			}
 		}
+		else{
+			
+			if(Collision(boxiObjRight) && Collision(boxiObjRampR))
+			{
+				Mandeln.object.translateX( -moveDistance );
+			}
+		}
+
 	}
+
 
 	if(keyboard.pressed("space"))
     {	

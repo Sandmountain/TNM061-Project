@@ -24,7 +24,21 @@ modell_loader = function(object)
 	{
 		//Läser in material
 		var multiMaterial = new THREE.MultiMaterial(data.materials);
-		
+		if(object.url == "./Models/Levels/Level_1/floor.jd" || object.url == "./Models/Levels/Level_1/pipe.jd" || object.url == "./Models/Levels/Level_1/fencewall1.jd")
+		{
+			//multiMaterial.materials[0].transparent = true;
+			//multiMaterial.materials[0].opacity = 0.7;
+			multiMaterial.materials[0].map.wrapS = multiMaterial.materials[0].map.wrapT = THREE.RepeatWrapping;
+			multiMaterial.materials[0].map.repeat.set(2,2);
+		}
+		if(object.url == "./Models/Levels/Level_1/fencewall1.jd" || object.url == "./Models/Levels/Level_1/fencewall2.jd" || object.url == "./Models/Levels/Level_1/fencewall3.jd" || object.url == "./Models/Levels/Level_1/fencewall4.jd" || object.url == "./Models/Levels/Level_1/fencewall5.jd" || object.url == "./Models/Levels/Level_1/fencewall6.jd")
+		{
+			
+			//multiMaterial.materials[0].transparent = true;
+			//multiMaterial.materials[0].opacity = 0.7;
+			multiMaterial.materials[0].map.wrapS = multiMaterial.materials[0].map.wrapT = THREE.RepeatWrapping;
+			multiMaterial.materials[0].map.repeat.set(10,10);
+		}
 		
 		for (var i = 0; i < data.geometries.length; ++i)
 		{
