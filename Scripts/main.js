@@ -42,8 +42,9 @@ var hopp_count = 0;
 
 // URL adresser till modellerna, de som har fått egna variabler är sådana object som något händer med.
 var Mandeln_url = "./Models/Mandel/animationRotated.JD";
-var model_url = ["./Models/Levels/Level_1/doorh.jd","./Models/Levels/Level_1/doorv.jd","./Models/Levels/Level_1/pipe.jd","./Models/Levels/Level_1/barrel1.jd","./Models/Levels/Level_1/barrel2.jd","./Models/Levels/Level_1/barrel3.jd","./Models/Levels/Level_1/barrel4.jd","./Models/Levels/Level_1/barrel5.jd"
-,"./Models/Levels/Level_1/fencewall1.jd","./Models/Levels/Level_1/fencewall2.jd","./Models/Levels/Level_1/floor.jd","./Models/Levels/Level_1/kortsida1tjock.jd","./Models/Levels/Level_1/kortsida2tjock.jd","./Models/Levels/Level_1/lada1.jd","./Models/Levels/Level_1/lada2.jd"
+var model_url = ["./Models/Levels/Level_1/doorh.jd","./Models/Levels/Level_1/doorv.jd","./Models/Levels/Level_1/pipe.jd","./Models/Levels/Level_1/barrel1.jd","./Models/Levels/Level_1/barrel2.jd","./Models/Levels/Level_1/barrel3.jd"
+,"./Models/Levels/Level_1/barrel4.jd","./Models/Levels/Level_1/barrel5.jd","./Models/Levels/Level_1/fencewall1.jd","./Models/Levels/Level_1/fencewall2.jd","./Models/Levels/Level_1/floor.jd"
+,"./Models/Levels/Level_1/kortsida1tjock.jd","./Models/Levels/Level_1/kortsida2tjock.jd","./Models/Levels/Level_1/lada1.jd","./Models/Levels/Level_1/lada2.jd"
 ,"./Models/Levels/Level_1/lada3.jd","./Models/Levels/Level_1/lada4.jd","./Models/Levels/Level_1/lada5.jd","./Models/Levels/Level_1/lada6.jd","./Models/Levels/Level_1/lada7.jd","./Models/Levels/Level_1/lada8.jd"
 ,"./Models/Levels/Level_1/lastpall.jd","./Models/Levels/Level_1/lastpall2.jd","./Models/Levels/Level_1/lastpall3.jd","./Models/Levels/Level_1/langsida1tjock.jd","./Models/Levels/Level_1/langsida2tjock.jd"
 ,"./Models/Levels/Level_1/platta.jd","./Models/Levels/Level_1/fencewall3.jd","./Models/Levels/Level_1/fencewall4.jd","./Models/Levels/Level_1/fencewall5.jd","./Models/Levels/Level_1/fencewall6.jd"
@@ -83,7 +84,6 @@ var collidableMeshList = [model_url.lenght];
 
 // Denna används för att kolla när hoppanimationen ska sluta
 var floor_collision;
-
 
 
 
@@ -197,13 +197,35 @@ function createscene()
 	********     Ljussättning    ***************
 	*******************************************/
 	//ambient ljussättning
-	var ambient = new THREE.AmbientLight( 0x444444 );
+	var ambient = new THREE.AmbientLight( 0x444444, 0.2 );
 	scene.add( ambient );
+
+	var RF = new THREE.PointLight( 0xffffff , 3, 2500 ,2 );
+	RF.position.set( 500, 1800, -1200 );
+	RF.castShadow = true;
 	
-	// Directional ljus
-	var directionalLight = new THREE.DirectionalLight( 0xffeedd,0.5 );
-	directionalLight.position.set(0 , 100, 0 ).normalize();
-	scene.add( directionalLight );
+	var RM = new THREE.PointLight( 0xffffff , 3, 2500 ,2 );
+	RM.position.set( 500, 1800, 0 );
+	scene.add( RM )
+	
+	var RB = new THREE.PointLight( 0xffffff , 3, 2500 ,2 );
+	RB.position.set( 500, 1800, 1200 );
+	scene.add( RB )
+	
+	
+	var LF = new THREE.PointLight( 0xffffff , 3, 2500 ,2 );
+	LF.position.set( -500, 1800, -1200 );
+	scene.add( LF );
+	
+	var LM = new THREE.PointLight( 0xffffff , 3, 2500 ,2 );
+	LM.position.set( -500, 1800, -0 );
+	scene.add( LM )
+
+	
+	var LB = new THREE.PointLight( 0xffffff , 3, 2500 ,2 );
+	LB.position.set( -500, 1800, 1200 );
+	scene.add( LB )
+
 
 	/*******************************************
 	*************Laddar modellerna**************
@@ -231,7 +253,7 @@ function createscene()
 	Exit = new Mloader(Exit_url,false)
 	modell_loader(Exit);
 	scene.add(Exit.object);
-	Exit.object.visible = false;
+	Exit.object.visible = true;
 	
 	
 	// funktion som skapar object för kollision
@@ -365,9 +387,10 @@ function draw()
 			//Skapar kollisions blocket så banan kan sluta
 			Exit_crash = new THREE.Box3().setFromObject(Exit.object);
 			//stoppar spelet
-			if(boxiObjBack.intersectsBox(Exit_crash))
+			if(boxiObjFront.intersectsBox(Exit_crash))
 			{
-				document.location.href = "file:///H:/TNM061/Projekt%200.9/TNM061.project/index.html" ;
+				console.log("Vagg");
+				document.location.href = "./index.html" ;
 				stop_game = false;
 			}
 		}
@@ -619,7 +642,7 @@ function movement(){
     		speedY = 25; //5
 			if(silence == false)
 			{
-				SFXvol_controll[0].play();
+				SFXvol_controll[2].play();
 			}
     	}
 	}
