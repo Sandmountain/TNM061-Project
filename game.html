@@ -22,55 +22,63 @@
     <body onload='start();'>
 
         <div id='canvas'>
-            <div id="menu-button" onclick="showMenu();"></div>
-            <div id="game-menu">
-                <div id="HTP"></div>
-                <div id="Cred"></div>
-                <div id= "RS" onclick='window.location.reload()'></div>
-                <div id="VolumeCtrl">
-                <!--Musik-->
-                    <div id="slider">
-                        <input id="vol-control" class="bar" type="range" value="100" oninput="SetVolume(this.value)" onchange="SetVolume(this.value)"></input>
-                        <span class="glyphicon glyphicon-volume-off" id="mute" onclick="togglePlay();"></span>
-                        <span class="highlight"></span>
-                        <output id="rangevalue"><div id="chosen">100%</div></output>
-                        <div id="infoVol"><p id="pText">Sound Volume</p></div>
-                    </div>
-                    <!--Ljudeffekter-->
-                    <div id="slider">
-                        <input id="vol-control" class="bar" type="range" value="100" oninput="SetVolume2(this.value)" onchange="SetVolume2(this.value)"></input>
-                        <span class="glyphicon glyphicon-volume-off" id="mute" onclick="muteSFX();"></span>
-                        <span class="highlight"></span>
-                        <output id="rangevalue"><div id="chosen2">100%</div></output>
-                        <div id="infoVol"><p id="pText">Sound Effects Volume</p></div>
-                    </div>
-                </div>
-            </div>
-
-            </div>
-        </div>
-        
-        
+        	<div id="menu-button" onclick="showMenu();"></div>
+        	<div id="game-menu" class="js-fade fade-in is-paused">
+   			 
+            	<div id="HTP"></div>
+            	<div id="Cred"></div>
+            	<div id= "RS" onclick='window.location.reload()'></div>
+            	<div id="VolumeCtrl">
+            	<!--Musik-->
+                	<div id="slider">
+                    	<input id="vol-control" class="bar" type="range" value="30" oninput="SetVolume(this.value)" onchange="SetVolume(this.value)"></input>
+                    	<span class="glyphicon glyphicon-volume-off" id="mute" onclick="togglePlay();"></span>
+                    	<span class="highlight"></span>
+                    	<output id="rangevalue"><div id="chosen">30%</div></output>
+                    	<div id="infoVol"><p id="pText">Sound Volume</p></div>
+                	</div>
+                	<!--Ljudeffekter-->
+                	<div id="slider">
+                    	<input id="vol-control2" class="bar" type="range" value="100" oninput="SetVolume2(this.value)" onchange="SetVolume2(this.value)"></input>
+                    	<span class="glyphicon glyphicon-volume-off" id="mute" onclick="muteSFX();"></span>
+                    	<span class="highlight"></span>
+                    	<output id="rangevalue"><div id="chosen2">100%</div></output>
+                    	<div id="infoVol"><p id="pText">Sound Effects Volume</p></div>
+                	</div>
+            	</div>
+        	</div>
+   	 
+        	</div>
+ 	 
+   	 
+   	 
     <script>
-    //Volume Trackers
-    function SetVolume(val)
-    {
-        snd.volume = val / 100;
-               var value = document.getElementById("chosen");
-            value.innerHTML = val + "%";
-    }
+	//Volume Trackers
+	function SetVolume(val)
+	{
+    	snd.volume = val / 100;
+           	var value = document.getElementById("chosen");
+        	value.innerHTML = val + "%";
+	}
 
-    function SetVolume2(val2)
-    {
-        jump.volume = val2 / 100;
-        walk.volume = val2 / 100;
-        ugh.volume = val2 / 100;  
-        tGround.volume = val2 / 100;  
-        
-            var value2 = document.getElementById("chosen2");
-            value2.innerHTML = val2 + "%";        
+	function SetVolume2(val2)
+	{
+    	jump.volume = val2 / 100;
+    	walk.volume = val2 / 100;
+    	ugh.volume = val2 / 100;  
+    	tGround.volume = val2 / 100;  
+   	 
+        	var value2 = document.getElementById("chosen2");
+        	value2.innerHTML = val2 + "%";   	 
+	}
+    
+    var el = document.querySelector('.js-fade');
+    if (el.classList.contains('is-paused')){
+      el.classList.remove('is-paused');
     }
+    
     </script>
+
 
 
         <script src='./Scripts/three.js'></script>

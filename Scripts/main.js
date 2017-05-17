@@ -111,6 +111,7 @@ var Audio_Voice_counter = 0;
 //ljuddeklaration
 var silence = false;
 	snd = new Audio("./Audio/song.mp3"); 
+	snd.volume = 0.3;
 	jump = new Audio("./Audio/Jump1.mp3");
 	walk = new Audio("./Audio/walk.mp3");
 	ugh = new Audio("./Audio/ugh.mp3");
@@ -120,8 +121,23 @@ var silence = false;
 	findKey = new Audio("./Audio/FindKey.mp3")
 
 //Ljudarray
-var SFXvol_controll = [jump, walk, ugh, tGround, foundKey, engelbrekt, findKey];
 
+var SFXvol_controll = [jump, walk, ugh, tGround, foundKey, engelbrekt, findKey];
+		
+		//Spelar väldigt dramatiska voicelines
+		if(Audio_Voice_counter == 0){
+			
+			setTimeout(function(){ 
+				SFXvol_controll[6].play();
+				Audio_Voice_counter= 1;   
+						setTimeout(function(){ 
+						SFXvol_controll[5].play();
+						Audio_Voice_counter = 2;   			
+					}, 20000);				
+			}, 1700); 
+		}
+		
+	
 
 
 ////*****************////
@@ -197,16 +213,16 @@ function createscene()
 	********     Ljussättning    ***************
 	*******************************************/
 	//ambient ljussättning
-	var ambient = new THREE.AmbientLight( 0x444444, 0.2 );
+	var ambient = new THREE.AmbientLight( 0x444444, 0.4 );
 	scene.add( ambient );
 
 	var RF = new THREE.PointLight( 0xffffff , 3, 2500 ,2 );
 	RF.position.set( 500, 1800, -1200 );
 	RF.castShadow = true;
 	
-	var RM = new THREE.PointLight( 0xffffff , 3, 2500 ,2 );
+	/*var RM = new THREE.PointLight( 0xffffff , 3, 2500 ,2 );
 	RM.position.set( 500, 1800, 0 );
-	scene.add( RM )
+	scene.add( RM )*/
 	
 	var RB = new THREE.PointLight( 0xffffff , 3, 2500 ,2 );
 	RB.position.set( 500, 1800, 1200 );
@@ -217,9 +233,9 @@ function createscene()
 	LF.position.set( -500, 1800, -1200 );
 	scene.add( LF );
 	
-	var LM = new THREE.PointLight( 0xffffff , 3, 2500 ,2 );
+	/*var LM = new THREE.PointLight( 0xffffff , 3, 2500 ,2 );
 	LM.position.set( -500, 1800, -0 );
-	scene.add( LM )
+	scene.add( LM )*/
 
 	
 	var LB = new THREE.PointLight( 0xffffff , 3, 2500 ,2 );
@@ -253,7 +269,7 @@ function createscene()
 	Exit = new Mloader(Exit_url,false)
 	modell_loader(Exit);
 	scene.add(Exit.object);
-	Exit.object.visible = true;
+	Exit.object.visible = false;
 	
 	
 	// funktion som skapar object för kollision
@@ -314,22 +330,7 @@ function draw()
 	// Loopar över draw functionen och sänker fps'n till 60fps
 	setTimeout(function() {
 		
-		if(Audio_Voice_counter == 0){
-			setTimeout(function(){ 
-				SFXvol_controll[6].play();
-				Audio_Voice_counter= 1;   
-							
-			}, 1500); 
-		}
-		
-		if(Audio_Voice_counter == 1)
-		{	
-			setTimeout(function(){ 
-				SFXvol_controll[5].play();
-				Audio_Voice_counter = 2;   
-				
-			}, 20000);
-		}
+
 
 		// Ritar upp scenen
 		renderer.render(scene, camera);
@@ -368,6 +369,7 @@ function draw()
 			if(silence == false)
 			{
 				SFXvol_controll[4].play();
+				
 			}
 		}
 		
@@ -390,17 +392,19 @@ function draw()
 			if(boxiObjFront.intersectsBox(Exit_crash))
 			{
 				console.log("Vagg");
+				alert('Level 1 Complete');
 				document.location.href = "./index.html" ;
 				stop_game = false;
+				
 			}
 		}
 		
 		//Ifall någon trycker esc så slutar spelet
 		if(keyboard.pressed("escape"))
-		{
-			document.location.href = "file:///H:/TNM061/Projekt%200.9/TNM061.project/index.html" ;
-			stop_game = false;
-		}
+   		 {
+   		 keyMenu();    
+   		 }
+
 		
 		/*// Test till en egen raycaster
 		var ray = new Raytracer3V();
@@ -665,51 +669,62 @@ function Collision(obj){
 ////   Ljudfunktioner ////
 ////*****************////
 
-	//Skapa bakgrundsmusik
-	snd.addEventListener('ended', function() {
-    this.currentTime = 0;
-    this.play();
-	}, false);
-	setTimeout( play_func, 1500 );
-		function play_func(){
-		snd.play();
-		}
-	
-	
-	//ljudeffekter
-	window.addEventListener("keydown", checkKeyPressed, false);
-	
-	function checkKeyPressed(e) {
-    	if (e.keyCode == "90") {
-    		togglePlay();
-    		
-    		//använd knapp med <a onClick="togglePlay()">Click here to hear.</a>
-		}
-		if (e.keyCode == "88") {
-					if(silence == true){
-						silence = false;
-					}else{	
-						silence = true;
-					} 			
-    		//använd knapp med <a onClick="togglePlay()">Click here to hear.</a>
-		}	
-	}
+//Skapa bakgrundsmusik
+    snd.addEventListener('ended', function() {
+	this.currentTime = 0;
+	this.play();
+    }, false);
+    setTimeout( play_func, 1500 );
+   	 function play_func(){
+   	 snd.play();
+   	 }
+    
+    
+    //ljudeffekter
+    window.addEventListener("keydown", checkKeyPressed, false);
+    
+    function checkKeyPressed(e) {
+   	 if (e.keyCode == "90") {
+   		 togglePlay();
+   		 
+   	 }
+   	 if (e.keyCode == "88") {
+   				 if(silence == true){
+   					 silence = false;
+   					 document.getElementById("vol-control2").value = 100;
+   				 }else{    
+   					 silence = true;
+   					 document.getElementById("vol-control2").value = 0;
+   				 }    				 
+   	 }    
+    }
 
-	//pause backgroundmusic
-	function togglePlay() {
-        		
-  			return snd.paused ? snd.play() : snd.pause();
+    //pause backgroundmusic
+    function togglePlay() {
+   		 if(snd.paused ){
+   		 document.getElementById("vol-control").value = 50;
+   		 }
+   		 if(!snd.paused ){
+   		 document.getElementById("vol-control").value = 0;
+   		 }
+     		 return snd.paused ? snd.play() : snd.pause();
+   		 
+   	 
+    };  
 
-	};  
-
-	function muteSFX(){
-		
-		if(silence == true){
-				silence = false;
-			}else{	
-				silence = true;
-			}
-	}   
+    function muteSFX(val){
+   	 
+   	 if(silence == true){
+   			 
+   			 silence = false;
+   			 document.getElementById("vol-control2").value = 100;   			 
+   			 
+   		 }else{    
+   			 silence = true;
+   			 document.getElementById("vol-control2").value = 0;
+   			 
+   		 }
+    }  
 
 ////*****************////
 ////Diverse funktioner ////

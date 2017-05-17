@@ -1,7 +1,7 @@
 body{
-    margin:0 !important;
-    overflow-x: hidden !important;
-    background: #303030 !important;
+	margin:0 !important;
+	overflow-x: hidden !important;
+	background: #303030 !important;
   }
 
   #top-image {
@@ -21,93 +21,93 @@ z-index:0;
 
  
   header{
-    position: relative;
-    height: 500px;
-    background: linear-gradient(to bottom,  #589daa 0%, #e3e7db 30%);
-    background-attachment: fixed;
+	position: relative;
+	height: 500px;
+	background: linear-gradient(to bottom,  #589daa 0%, #e3e7db 30%);
+	background-attachment: fixed;
   }
 
   #logo{
-    display: block;
-    margin: auto;
-    position: relative;
-    top: 50px;
+	display: block;
+	margin: auto;
+	position: relative;
+	top: 50px;
   }
 
   #fg{
-    position: absolute;
-    bottom: 0;
-    left: 0;
+	position: absolute;
+	bottom: 0;
+	left: 0;
   }
 
   .layer{
-    position: absolute;
-    bottom: 0;
-    left: 0;
+	position: absolute;
+	bottom: 0;
+	left: 0;
   }
 
   .cloud{
-    width: 300px;
-    bottom: auto;
+	width: 300px;
+	bottom: auto;
   }
 
   .small{
-    width: 100px;
+	width: 100px;
   }
 
   #cloud1{
-    left: 50%;
-    top: 200px;
+	left: 50%;
+	top: 200px;
   }
 
   #cloud2{
-    left: 10%;
-    top: 100px;
+	left: 10%;
+	top: 100px;
   }
 
   #cloud3{
-    left: 70%;
-    top: 50px;
-    width: 150px;
+	left: 70%;
+	top: 50px;
+	width: 150px;
   }
 
   section{
-    position: relative !important;
-    min-height: 500px !important;
-    height: 100vh !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
+	position: relative !important;
+	min-height: 500px !important;
+	height: 100vh !important;
+	display: flex !important;
+	justify-content: center !important;
+	align-items: center !important;
   }
 
   svg{
-    display: block;
-    margin: auto;
+	display: block;
+	margin: auto;
   }
  
   .logo{
-      background-position: center;
-      
+  	background-position: center;
+ 	 
   }
   .logo:hover{
-      cursor:pointer;
+  	cursor:pointer;
   }
  
   #rip{
-    background-position: center;
-    position: float;    
-    justify-content: center;
-    align-items: center;
+	background-position: center;
+	position: float;    
+	justify-content: center;
+	align-items: center;
   }
  
   .hoi{
-     
-      display: block;
-      position: absolute;
-      margin: auto;
-      padding-bottom: 70%;
-      
-      
+	 
+  	display: block;
+  	position: absolute;
+  	margin: auto;
+  	padding-bottom: 70%;
+ 	 
+ 	 
   }
   .hoi:hover{
   animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
@@ -118,19 +118,19 @@ z-index:0;
 
 @keyframes shake {
   10%, 90% {
-    transform: translate3d(-1px, 0, 0);
+	transform: translate3d(-1px, 0, 0);
   }
  
   20%, 80% {
-    transform: translate3d(2px, 0, 0);
+	transform: translate3d(2px, 0, 0);
   }
 
   30%, 50%, 70% {
-    transform: translate3d(-4px, 0, 0);
+	transform: translate3d(-4px, 0, 0);
   }
 
   40%, 60% {
-    transform: translate3d(4px, 0, 0);
+	transform: translate3d(4px, 0, 0);
   }
 }
 
@@ -246,6 +246,7 @@ input[type="range"]:focus {
   outline: none;
 }
 #mute{
+    color : white;
   float: right;
   right: -16px;
   top: -3px;
@@ -260,117 +261,152 @@ input[type="range"]:focus {
   top: -55px;
 }
 #VolumeCtrl{
-    position: fixed;
+	position: fixed;
    
-        right: 44%;
-        bottom: 29%;
+    	right: 44%;
+    	bottom: 29%;
 }
 #pText{
   color: #FFF;
 }
 
 /*meny*/
-            body {
-                background-color: black;
-                width: 100%;
-                height: 100%;
-                overflow: hidden;
-            }
-            #gameCanvas {
-                background-color: black;
-                
-                margin: auto;
-            }
+   		 body {
+            	background-color: black;
+            	width: 100%;
+            	height: 100%;
+            	overflow: hidden;
+        	}
+        	#gameCanvas {
+            	background-color: black;
+           	 
+            	margin: auto;
+        	}
 
-            #menu-button
-            {
-                position: fixed;
-                background-image: url(../img/menu-button-new.png);
-                height: 60px;
-                width: 60px;
-                background-size: 100% auto;
-                cursor: pointer;
-                top: 15px;
-                right: 1%;
+        	#menu-button
+        	{
+            	position: fixed;
+            	background-image: url(../img/menu-button-new.png);
+            	height: 60px;
+            	width: 60px;
+            	background-size: 100% auto;
+            	cursor: pointer;
+            	top: 15px;
+            	right: 1%;
 
-            }
-            #menu-button:hover
-            {
-                transform: scale(1.07);
-            }
+        	}
+        	#menu-button:hover
+        	{
+            	transform: scale(1.07);
+        	}
 
-            #game-menu
-            {
-                display: none;
-                width: 100%
-                height: 100%;
-                color: red;
-                overflow: auto;
-                bottom: -51%;
-                right: -36%;
+        	#game-menu
+        	{
+            	display: none;
+            	width: 100%;
+            	height: 100%;
+            	color: red;
+            	overflow: auto;
+            	bottom: -51%;
+            	right: -36%;
+   		 
+   			 
 
 
-            }
+        	}
+   		 #backdrop{
+   			 
+   			 position: fixed;
+   			 float: center;
+   			 width: 30%;
+            	height: 70%;
+   			 right: 44%;
+            	bottom: 68%;
+   			 background-color: #FFF;
+   			 opacity: 50%;
+   			 
+   		 }
+   		 
 
-            #HTP
-            {
-                position: fixed;
-                background-image: url(../img/how-to-play-button.png);
-                background-size: 100% auto;
-                background-repeat: no-repeat;
-                cursor: pointer;
-                height: 84px;
-                width: 288.96px;
-                right: 44%;
-                bottom: 68%;
+        	#HTP
+        	{
+            	position: fixed;
+            	background-image: url(../img/how-to-play-button.png);
+            	background-size: 100% auto;
+            	background-repeat: no-repeat;
+            	cursor: pointer;
+            	height: 84px;
+            	width: 288.96px;
+            	right: 44%;
+            	bottom: 68%;
 
-            }
+        	}
 
-            #HTP:hover
-            {
-                transform: scale(1.03);
-                background-image: url(../img/how-to-play-button-hover.png);
-            }
+        	#HTP:hover
+        	{
+            	transform: scale(1.03);
+            	background-image: url(../img/how-to-play-button-hover.png);
+        	}
 
-            #Cred
-            {
-                position: fixed;
-                background-image: url(../img/credits-button.png);
-                background-size: 100% auto;
-                background-repeat: no-repeat;
-                cursor: pointer;
-                height: 84px;
-                width: 288.96px;
-                right: 44%;
-                bottom: 57%;
+        	#Cred
+        	{
+            	position: fixed;
+            	background-image: url(../img/credits-button.png);
+            	background-size: 100% auto;
+            	background-repeat: no-repeat;
+            	cursor: pointer;
+            	height: 84px;
+            	width: 288.96px;
+            	right: 44%;
+            	bottom: 57%;
 
-            }
+        	}
 
-            #Cred:hover
-            {
-                transform: scale(1.03);
-                background-image: url(../img/credits-button-hover.png);
-            }
+        	#Cred:hover
+        	{
+            	transform: scale(1.03);
+            	background-image: url(../img/credits-button-hover.png);
+        	}
 
-            #RS
-            {
-                position: fixed;
-                background-image: url(../img/restart-game-button.png);
-                background-size: 100% auto;
-                background-repeat: no-repeat;
-                cursor: pointer;
-                height: 84px;
-                width: 288.96px;
-                right: 44%;
-                bottom: 46%;
+        	#RS
+        	{
+            	position: fixed;
+            	background-image: url(../img/restart-game-button.png);
+            	background-size: 100% auto;
+            	background-repeat: no-repeat;
+            	cursor: pointer;
+            	height: 84px;
+            	width: 288.96px;
+            	right: 44%;
+            	bottom: 46%;
 
-            }
+        	}
 
-            #RS:hover
-            {
-                transform: scale(1.03);
-                background-image: url(../img/restart-game-button-hover.png);
-            }
-            
+        	#RS:hover
+        	{
+            	transform: scale(1.03);
+            	background-image: url(../img/restart-game-button-hover.png);
+        	}
+       	 
+    
+
+@keyframes fadeIn {
+  to {
+	opacity: 1;
+  }
+}
+
+
+
+.fade-in {
+  opacity: 0;
+  animation: fadeIn .5s ease-in 1 forwards;
+}
+
+.is-paused {
+  animation-play-state: paused;
+}
+
+
 
 
