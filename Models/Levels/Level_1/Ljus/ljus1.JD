@@ -1,0 +1,30 @@
+{
+    "meta": 
+    {
+        "version": 1.2,
+        "generator": "cgdev json exporter"
+    },
+    "model": 
+    {
+        "meshes": []
+    },
+    "hierarchy": 
+    {
+        "nodes": [
+            {
+                "name": "SceneRoot",
+                "parent": -1,
+                "pos": [0,0,0],
+                "scl": [1,1,1],
+                "rot": [0,0,0,1]
+            },
+            {
+                "name": "Spot001",
+                "parent": 0,
+                "pos": [0.916519,354.6,18.4227],
+                "scl": [1,1,1],
+                "rot": [0.014125,0.081701,-0.00115802,0.996556]
+            }
+        ]
+    }
+}
