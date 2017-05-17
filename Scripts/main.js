@@ -258,16 +258,16 @@ function createscene()
 	//boxes för trappan, likadant fast så man vet ifall han ska gå upp för trappa
 	//box fram
 	Mandeln.object.add(rampBoxiF);
-	rampBoxiF.translateZ(40).translateY(30).translateX(5);
+	rampBoxiF.translateZ(40).translateY(33).translateX(5);
 	//box bak
 	Mandeln.object.add(rampBoxiB);
-	rampBoxiB.translateZ(-40).translateY(30).translateX(5);
+	rampBoxiB.translateZ(-40).translateY(33).translateX(5);
 	//box left
 	Mandeln.object.add(rampBoxiL);
-	rampBoxiL.translateZ(5).translateY(30).translateX(40);
+	rampBoxiL.translateZ(5).translateY(33).translateX(40);
 	//box right
 	Mandeln.object.add(rampBoxiR);
-	rampBoxiR.translateZ(5).translateY(30).translateX(-30);
+	rampBoxiR.translateZ(5).translateY(33).translateX(-30);
 
 	//döljer alla boxar så de inte syns
 	boxiL.visible = false;
@@ -406,8 +406,8 @@ function create_collisionBox()
 	var boxLR = new THREE.BoxGeometry( 5, 40, 70);
 	var boxT = new THREE.CylinderGeometry( 25, 25, 5);
 	var boxG = new THREE.CylinderGeometry( 25, 25, 5);
-	var rampBoxFB = new THREE.BoxGeometry(70,40,5);
-	var rampBoxLR = new THREE.BoxGeometry( 5, 40, 70);
+	var rampBoxFB = new THREE.BoxGeometry(70,45,5);
+	var rampBoxLR = new THREE.BoxGeometry( 5, 45, 70);
 	
 	
 	
@@ -463,8 +463,8 @@ function gravity(){
 	}
 
 	var speed = speedY + grav*(n*3);
-	if(speed < -15){
-		speed = -15;
+	if(speed < -12){
+		speed = -12;
 	}
 
 	Mandeln.object.position.y += speed;
@@ -525,7 +525,7 @@ function movement(){
 			if(Collision(boxiObjBack))
 			{
 				if(!(Collision(boxiObjRampB))){
-					Mandeln.object.translateY(30);
+					Mandeln.object.translateY(33);
 				}
 				Mandeln.object.translateZ( -moveDistance );
 
@@ -549,7 +549,7 @@ function movement(){
 			if(Collision(boxiObjFront))
 			{
 				if(!(Collision(boxiObjRampF))){
-					Mandeln.object.translateY(30);
+					Mandeln.object.translateY(33);
 				}
 				Mandeln.object.translateZ( moveDistance );
 
@@ -571,7 +571,7 @@ function movement(){
 			if(Collision(boxiObjLeft))
 			{
 				if(!(Collision(boxiObjRampL))){
-					Mandeln.object.translateY(30);
+					Mandeln.object.translateY(33);
 				}
 				Mandeln.object.translateX( moveDistance );
 
@@ -594,7 +594,7 @@ function movement(){
 			if(Collision(boxiObjRight))
 			{
 				if(!(Collision(boxiObjRampR))){
-					Mandeln.object.translateY(30);
+					Mandeln.object.translateY(33);
 				}
 				Mandeln.object.translateX( -moveDistance );
 
