@@ -440,22 +440,22 @@ function create_collisionBox()
 	
 	
 	
-	var golvmaterial = new THREE.MeshBasicMaterial;
+	
 	
 
 	
 	// Lägger in geometrin och materialet på varje objekt för kollision
-	boxiF = new THREE.Mesh( boxfB, golvmaterial );
-	boxiR = new THREE.Mesh( boxLR, golvmaterial );
-	boxiB = new THREE.Mesh( boxfB, golvmaterial );
-	boxiL = new THREE.Mesh( boxLR, golvmaterial );
-	boxiT = new THREE.Mesh( boxT, golvmaterial );
-	boxiG = new THREE.Mesh( boxG, golvmaterial);
+	boxiF = new THREE.Mesh( boxfB, new THREE.MeshBasicMaterial({wireframe: true}) );
+	boxiR = new THREE.Mesh( boxLR, new THREE.MeshBasicMaterial({wireframe: true})  );
+	boxiB = new THREE.Mesh( boxfB, new THREE.MeshBasicMaterial({wireframe: true})  );
+	boxiL = new THREE.Mesh( boxLR, new THREE.MeshBasicMaterial({wireframe: true})  );
+	boxiT = new THREE.Mesh( boxT, new THREE.MeshBasicMaterial({wireframe: true})  );
+	boxiG = new THREE.Mesh( boxG, new THREE.MeshBasicMaterial({wireframe: true}) );
 	//kollisionsobjekt för att kunna gå i trappor
-	rampBoxiF = new THREE.Mesh(rampBoxFB,new THREE.MeshBasicMaterial({color: 0xff3300}));
-	rampBoxiB = new THREE.Mesh(rampBoxFB,new THREE.MeshBasicMaterial({color: 0xff3300}));
-	rampBoxiL = new THREE.Mesh(rampBoxLR,new THREE.MeshBasicMaterial({color: 0xff3300}));
-	rampBoxiR = new THREE.Mesh(rampBoxLR,new THREE.MeshBasicMaterial({color: 0xff3300}));
+	rampBoxiF = new THREE.Mesh(rampBoxFB,new THREE.MeshBasicMaterial({color: 0xff3300, wireframe: true}));
+	rampBoxiB = new THREE.Mesh(rampBoxFB,new THREE.MeshBasicMaterial({color: 0xff3300, wireframe: true}));
+	rampBoxiL = new THREE.Mesh(rampBoxLR,new THREE.MeshBasicMaterial({color: 0xff3300, wireframe: true}));
+	rampBoxiR = new THREE.Mesh(rampBoxLR,new THREE.MeshBasicMaterial({color: 0xff3300, wireframe: true}));
 }	
 
 
